@@ -1,11 +1,9 @@
 package ee.taltech.iti0302.okapi.backend.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "tasks")
 public class Tasks {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,9 +11,13 @@ public class Tasks {
     private String title;
     private String description;
 
-    public Tasks(Long id, String title) {
-        this.id = id;
+    public Tasks(String title, String description) {
         this.title = title;
+        this.description = description;
+    }
+
+    public Tasks() {
+
     }
 
     public Long getId() {
