@@ -1,24 +1,26 @@
-package ee.taltech.iti0302.okapi.backend.entities;
+package com.example.demo;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class Timer {
+public class CountdownTimer {
     private int timeRemaining;
     private boolean isRunning;
 
-    public Timer() {
-        timeRemaining = 0;
-        isRunning = false;
+    public CountdownTimer() {
+        this.timeRemaining = 0; // Initialize to 0 seconds
+        this.isRunning = false;
     }
 
     public synchronized int getTimeRemaining() {
         return timeRemaining;
     }
+
     public synchronized boolean isRunning() {
         return isRunning;
     }
 
+    // Start countdown in seconds
     public synchronized void start(int seconds) {
         if (!isRunning) {
             timeRemaining = seconds;
@@ -26,10 +28,10 @@ public class Timer {
             Thread countdownThread = new Thread(() -> {
                 while (isRunning && timeRemaining > 0) {
                     try {
-                        Thread.sleep(1000); // 1 sec
+                        Thread.sleep(1000); // Sleep for 1 second
                         timeRemaining--;
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        // Handle interruption if needed
                     }
                 }
                 isRunning = false;
@@ -38,6 +40,7 @@ public class Timer {
         }
     }
 
+    //curl -X POST http://localhost:8080/timer/stop
     public synchronized void stop() {
         isRunning = false;
     }
@@ -48,6 +51,7 @@ public class Timer {
     }
 
     public synchronized void update() {
+        // Implement logic to decrement timer value
         if (isRunning && timeRemaining > 0) {
             timeRemaining--;
         }
@@ -56,6 +60,6 @@ public class Timer {
     public synchronized String formatTime() {
         int minutes = timeRemaining / 60;
         int seconds = timeRemaining % 60;
-        return  String.format("%02d:%02d", minutes, seconds);
+        return String.format("%02d:%02d", minutes, seconds);
     }
 }
