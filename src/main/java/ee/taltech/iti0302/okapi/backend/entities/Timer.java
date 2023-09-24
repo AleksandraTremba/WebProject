@@ -1,13 +1,13 @@
-package com.example.demo;
+package ee.taltech.iti0302.okapi.backend.entities;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class CountdownTimer {
+public class Timer {
     private int timeRemaining;
     private boolean isRunning;
 
-    public CountdownTimer() {
+    public Timer() {
         this.timeRemaining = 0; // Initialize to 0 seconds
         this.isRunning = false;
     }
@@ -28,10 +28,10 @@ public class CountdownTimer {
             Thread countdownThread = new Thread(() -> {
                 while (isRunning && timeRemaining > 0) {
                     try {
-                        Thread.sleep(1000); // Sleep for 1 second
+                        Thread.sleep(1000); // 1 second
                         timeRemaining--;
                     } catch (InterruptedException e) {
-                        // Handle interruption if needed
+                        throw new RuntimeException(e);
                     }
                 }
                 isRunning = false;
