@@ -1,21 +1,22 @@
 package ee.taltech.iti0302.okapi.backend.dto;
 
 public class TasksDTO {
-    private Long id;
+    private long id;
     private String title;
     private String description;
 
-    public TasksDTO (Long id, String title) {
+    public TasksDTO (long id, String title, String description) {
         this.id = id;
         this.title = title;
+        this.description = description;
     }
 
-    public TasksDTO() {
-
+    public TasksDTO(String title, String description) {
+        this.title = title;
+        this.description = description;
     }
 
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -35,7 +36,7 @@ public class TasksDTO {
         this.title = title;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 }

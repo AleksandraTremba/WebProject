@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 @Table(name = "tasks")
 public class Tasks {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private String title;
     private String description;
 
@@ -16,11 +16,7 @@ public class Tasks {
         this.description = description;
     }
 
-    public Tasks() {
-
-    }
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
     public String getTitle() {

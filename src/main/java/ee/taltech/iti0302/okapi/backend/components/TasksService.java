@@ -11,10 +11,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TasksService {
-    private final TasksRepository tasksRepository;
 
+public class TasksService {
     @Autowired
+    private TasksRepository tasksRepository;
+
     public TasksService(TasksRepository tasksRepository) {
         this.tasksRepository = tasksRepository;
     }
@@ -26,18 +27,15 @@ public class TasksService {
                 .collect(Collectors.toList());
     }
 
-    public Object getTaskById(Long id) {
-        Optional<Tasks> optionalTask = tasksRepository.findById(id);
-        return optionalTask.map(this::convertToDTO).orElse(null);
+    public Object getTaskById(long id) {
+        return tasksRepository.findById(id).map(this::convertToDTO).orElse(null);
     }
 
     public Object createTask(TasksDTO taskDTO) {
-        Tasks task = convertToEntity(taskDTO);
-        Tasks savedTask = tasksRepository.save(task);
-        return convertToDTO(savedTask);
+        return tasksRepository.save(new Tasks(taskDTO.getTitle(), taskDTO.getDescription()));
     }
 
-    public Object updateTask(Long id, TasksDTO taskDTO) {
+    public Object updateTask(long id, TasksDTO taskDTO) {
         Optional<Tasks> optionalTask = tasksRepository.findById(id);
         if (optionalTask.isPresent()) {
             Tasks existingTask = optionalTask.get();
@@ -50,23 +48,16 @@ public class TasksService {
         return null;
     }
 
-    public void deleteTask(Long id) {
+    public void deleteTask(long id) {
         tasksRepository.deleteById(id);
     }
 
     public Object convertToDTO(Tasks tasks) {
-        TasksDTO tasksDTO = new TasksDTO();
-        tasksDTO.setId(tasks.getId());
-        tasksDTO.setTitle(tasks.getTitle());
-        tasksDTO.setDescription(tasks.getDescription());
-        return tasksDTO;
+        return new TasksDTO(tasks.getId(), tasks.getTitle(), tasks.getDescription());
     }
 
     private Tasks convertToEntity(TasksDTO tasksDTO) {
-        Tasks task = new Tasks();
-        task.setTitle(tasksDTO.getTitle());
-        task.setDescription(task.getDescription());
-        return task;
+        return new Tasks(tasksDTO.getTitle(), tasksDTO.getDescription());
     }
 
 }

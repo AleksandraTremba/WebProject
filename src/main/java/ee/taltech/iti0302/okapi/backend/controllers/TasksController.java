@@ -17,9 +17,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tasks")
 public class TasksController {
-    private final TasksService tasksService;
-
     @Autowired
+    private TasksService tasksService;
+
     public TasksController(TasksService tasksService) {
         this.tasksService = tasksService;
     }
@@ -30,7 +30,7 @@ public class TasksController {
     }
 
     @GetMapping("/{id}")
-    public Object getTaskById(@PathVariable Long id) {
+    public Object getTaskById(@PathVariable long id) {
         return tasksService.getTaskById(id);
     }
 
@@ -40,12 +40,12 @@ public class TasksController {
     }
 
     @PutMapping("/{id}")
-    public Object updateTask(@PathVariable Long id, @RequestBody TasksDTO taskDTO) {
+    public Object updateTask(@PathVariable long id, @RequestBody TasksDTO taskDTO) {
         return tasksService.updateTask(id, taskDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable Long id) {
+    public void deleteTask(@PathVariable long id) {
         tasksService.deleteTask(id);
     }
 }
