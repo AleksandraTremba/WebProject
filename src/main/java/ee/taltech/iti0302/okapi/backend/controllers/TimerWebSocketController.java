@@ -12,8 +12,8 @@ public class TimerWebSocketController {
     public TimerWebSocketController(Timer timer) {
         this.timer = timer;
     }
-    @MessageMapping("/timer")
-    @SendTo("/timer/tick")
+    @MessageMapping("/api/timer")
+    @SendTo("/api/timer/tick")
     public int timerTick() {
         return timer.getTimeRemaining();
     }

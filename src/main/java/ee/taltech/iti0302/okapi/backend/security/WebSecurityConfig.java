@@ -18,6 +18,7 @@ public class WebSecurityConfig {
             .cors(it -> {})
             .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/timer/**")).permitAll()
                         .anyRequest().authenticated())
             .httpBasic(it -> {})
             .csrf((csrf) -> csrf.disable());
