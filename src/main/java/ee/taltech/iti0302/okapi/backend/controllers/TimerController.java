@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/timer")
+@RequestMapping("api/timer")
 public class TimerController {
     private final Timer timer;
 
@@ -15,25 +15,25 @@ public class TimerController {
         this.timer = timer;
     }
 
-    //curl http://localhost:8080/timer
+    //curl http://localhost:8080/api/timer
     @GetMapping
     public String getTimer() {
         return timer.formatTime();
     }
 
-    //curl -X POST http://localhost:8080/timer/start
+    //curl -X POST http://localhost:8080/api/timer/start
     @PostMapping("/start")
     public void startTimer() {
         timer.start(4000);
     }
 
-    //curl -X POST http://localhost:8080/timer/stop
+    //curl -X POST http://localhost:8080/api/timer/stop
     @PostMapping("/stop")
     public void stopTimer() {
         timer.stop();
     }
 
-    //curl -X POST http://localhost:8080/timer/reset
+    //curl -X POST http://localhost:8080/api/timer/reset
     @PostMapping("/reset")
     public void resetTimer() {
         timer.reset();
