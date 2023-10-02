@@ -6,10 +6,12 @@ import org.springframework.stereotype.Component;
 public class Timer {
     private int timeRemaining;
     private boolean isRunning;
+    private boolean started;
 
     public Timer() {
         this.timeRemaining = 0; // Initialize to 0 seconds
         this.isRunning = false;
+        started = false;
     }
 
     public synchronized int getTimeRemaining() {
@@ -22,21 +24,42 @@ public class Timer {
 
     // Start countdown in seconds
     public synchronized void start(int seconds) {
-        if (!isRunning) {
-            timeRemaining = seconds;
-            isRunning = true;
-            Thread countdownThread = new Thread(() -> {
-                while (isRunning && timeRemaining > 0) {
-                    try {
-                        Thread.sleep(1000); // 1 second
-                        timeRemaining--;
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+        if (!started) {
+            if (!isRunning) {
+                timeRemaining = seconds;
+                isRunning = true;
+                started = true;
+                Thread countdownThread = new Thread(() -> {
+                    while (isRunning && timeRemaining > 0) {
+                        try {
+                            Thread.sleep(1000); // 1 second
+                            timeRemaining--;
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                }
-                isRunning = false;
-            });
-            countdownThread.start();
+                    isRunning = false;
+                    started = false;
+                });
+                countdownThread.start();
+            }
+        } else {
+            if (!isRunning) {
+                isRunning = true;
+                Thread countdownThread = new Thread(() -> {
+                    while (isRunning && timeRemaining > 0) {
+                        try {
+                            Thread.sleep(1000); // 1 second
+                            timeRemaining--;
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    isRunning = false;
+                    started = false;
+                });
+                countdownThread.start();
+            }
         }
     }
 
@@ -46,7 +69,7 @@ public class Timer {
     }
 
     public synchronized void reset() {
-        timeRemaining = 0;
+        timeRemaining = 1;
         isRunning = false;
     }
 
