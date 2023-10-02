@@ -6,7 +6,7 @@ import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Customer;
 
 @Component
-public class Mapper {
+public class CustomerMapper {
     public CustomerDTO toDTO(Customer customer) {
         return new CustomerDTO(customer.getUsername(), customer.getPassword());
     }
