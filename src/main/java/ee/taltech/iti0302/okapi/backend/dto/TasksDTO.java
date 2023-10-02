@@ -5,6 +5,8 @@ public class TasksDTO {
     private String title;
     private String description;
 
+    public TasksDTO () {}
+
     public TasksDTO (long id, String title, String description) {
         this.id = id;
         this.title = title;
