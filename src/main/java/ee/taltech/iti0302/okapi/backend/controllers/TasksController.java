@@ -30,17 +30,17 @@ public class TasksController {
     }
 
     @GetMapping("/{id}")
-    public Object getTaskById(@PathVariable long id) {
+    public TasksDTO getTaskById(@PathVariable long id) {
         return tasksService.getTaskById(id);
     }
 
     @PostMapping
-    public Object createTask(@RequestBody TasksDTO taskDTO) {
-        return tasksService.createTask(taskDTO);
+    public void createTask(@RequestBody TasksDTO taskDTO) {
+        tasksService.createTask(taskDTO);
     }
 
     @PutMapping("/{id}")
-    public Object updateTask(@PathVariable long id, @RequestBody TasksDTO taskDTO) {
+    public TasksDTO updateTask(@PathVariable long id, @RequestBody TasksDTO taskDTO) {
         return tasksService.updateTask(id, taskDTO);
     }
 

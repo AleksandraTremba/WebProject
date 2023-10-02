@@ -27,15 +27,16 @@ public class TasksService {
                 .collect(Collectors.toList());
     }
 
-    public Object getTaskById(long id) {
-        return tasksRepository.findById(id).map(this::convertToDTO).orElse(null);
+    public TasksDTO getTaskById(long id) {
+        Optional<Tasks> task = tasksRepository.findById(id);
+        return task.map(this::convertToDTO).orElse(null);
     }
 
-    public Object createTask(TasksDTO taskDTO) {
-        return tasksRepository.save(new Tasks(taskDTO.getTitle(), taskDTO.getDescription()));
+    public void createTask(TasksDTO taskDTO) {
+        tasksRepository.save(convertToEntity(taskDTO));
     }
 
-    public Object updateTask(long id, TasksDTO taskDTO) {
+    public TasksDTO updateTask(long id, TasksDTO taskDTO) {
         Optional<Tasks> optionalTask = tasksRepository.findById(id);
         if (optionalTask.isPresent()) {
             Tasks existingTask = optionalTask.get();
@@ -52,7 +53,7 @@ public class TasksService {
         tasksRepository.deleteById(id);
     }
 
-    public Object convertToDTO(Tasks tasks) {
+    public TasksDTO convertToDTO(Tasks tasks) {
         return new TasksDTO(tasks.getId(), tasks.getTitle(), tasks.getDescription());
     }
 
