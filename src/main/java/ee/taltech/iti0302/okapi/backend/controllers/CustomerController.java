@@ -29,8 +29,11 @@ public class CustomerController {
     }
 
     @PostMapping("register")
-    @ResponseStatus(HttpStatus.OK)
-    public void registerCustomer(@RequestBody CustomerDTO customer) {
-        userRepository.save(new Customer(customer.getUsername(), customer.getPassword()));
+    public boolean registerCustomer(@RequestBody CustomerDTO customer) {
+        if (!userRepository.existsByUsername(customer.getUsername())) {
+            userRepository.save(new Customer(customer.getUsername(), customer.getPassword()));
+            return false;
+        }
+        return true;
     }
 }
