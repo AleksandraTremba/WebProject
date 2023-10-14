@@ -71,6 +71,7 @@ public class Timer {
     public synchronized void reset() {
         timeRemaining = 1;
         isRunning = false;
+
     }
 
     public synchronized void update() {
