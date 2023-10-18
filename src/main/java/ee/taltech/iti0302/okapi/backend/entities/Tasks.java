@@ -10,12 +10,14 @@ public class Tasks {
     private long id;
     private String title;
     private String description;
+    private TaskStatus status;
 
     public Tasks() {}
 
-    public Tasks(String title, String description) {
+    public Tasks(String title, String description, TaskStatus status) {
         this.title = title;
         this.description = description;
+        this.status = status;
     }
 
     public long getId() {
@@ -28,11 +30,19 @@ public class Tasks {
         return description;
     }
 
+    public TaskStatus getStatus() {
+        return status;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
     }
 }
