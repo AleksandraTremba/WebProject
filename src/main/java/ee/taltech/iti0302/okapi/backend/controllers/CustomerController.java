@@ -1,5 +1,6 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,18 +12,12 @@ import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 import ee.taltech.iti0302.okapi.backend.services.CustomerService;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("api/users")
 public class CustomerController {
-    
-    @Autowired
-    private CustomerRepository userRepository;
-    private CustomerService customerService;
-
-    public CustomerController(CustomerRepository userRepository, CustomerService customerService) {
-        this.userRepository = userRepository;
-        this.customerService = customerService;
-    }
+    private final CustomerRepository userRepository;
+    private final CustomerService customerService;
 
     @PostMapping("login")
     public boolean login(@RequestBody CustomerDTO customer) {
