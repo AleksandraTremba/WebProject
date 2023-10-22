@@ -12,17 +12,11 @@ import jakarta.persistence.Table;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
     @Column(nullable = false, unique = true)
     private String username;
     @Column(nullable = false)
     private String password;
-
-    public Customer() {}
-
-    public Customer(String username) {
-        this.username = username;
-    }
 
     public Customer(String username, String password) {
         this.username = username;
