@@ -1,5 +1,6 @@
 ### DATABASES ###
 DevBase.session.sql
+local.session.sql
 # Miscellaneous
 *.java.hsp
 *.sonarj
