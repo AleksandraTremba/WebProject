@@ -6,11 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.NoArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.RequiredArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 @Getter
 @Setter

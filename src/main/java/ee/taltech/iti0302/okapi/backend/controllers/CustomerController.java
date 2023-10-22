@@ -1,11 +1,8 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import ee.taltech.iti0302.okapi.backend.components.CustomerMapper;
 import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
@@ -16,20 +13,31 @@ import ee.taltech.iti0302.okapi.backend.services.CustomerService;
 @RestController
 @RequestMapping("api/users")
 public class CustomerController {
-    private final CustomerRepository userRepository;
-    private final CustomerService customerService;
+    @NonNull private CustomerRepository customerRepository;
+    @NonNull private CustomerService customerService;
 
     @PostMapping("login")
     public boolean login(@RequestBody CustomerDTO customer) {
-        return userRepository.existsByUsername(customer.getUsername());
+        return customerService.login(customer);
     }
 
     @PostMapping("register")
     public CustomerDTO registerCustomer(@RequestBody CustomerDTO customer) {
-        if (!customerService.customerExists(CustomerMapper.INSTANCE.toEntity(customer))) {
-            customerService.register(CustomerMapper.INSTANCE.toEntity(customer));
-            return customer;
-        }
-        return null;
+        return customerService.register(customer);
+    }
+
+    @PostMapping("update/username")
+    public CustomerDTO updateCustomerUsername(@RequestBody CustomerDTO customer) {
+        return customerService.updateUsername(customer);
+    }
+
+    @PostMapping("update/password")
+    public CustomerDTO updateCustomerPassword(@RequestBody CustomerDTO customer) {
+        return customerService.updatePassword(customer);
+    }
+
+    @DeleteMapping("delete")
+    public CustomerDTO deleteCustomer(@RequestBody CustomerDTO customer) {
+        return customerService.delete(customer);
     }
 }
