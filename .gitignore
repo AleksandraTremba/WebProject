@@ -48,8 +48,10 @@ spring-*/src/main/java/META-INF/MANIFEST.MF
 out
 test-output
 atlassian-ide-plugin.xml
+backend.iml
 
 # VS Code
 .vscode/
 
+HELP.md
 cached-antora-playbook.yml
