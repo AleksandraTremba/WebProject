@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ee.taltech.iti0302.okapi.backend.components.CustomerMapper;
 import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
-import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 import ee.taltech.iti0302.okapi.backend.services.CustomerService;
 
