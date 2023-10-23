@@ -1,39 +1,52 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
-import ee.taltech.iti0302.okapi.backend.entities.Timer;
+import ee.taltech.iti0302.okapi.backend.dto.TimerDTO;
+import ee.taltech.iti0302.okapi.backend.service.TimerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("api/timer")
 public class TimerController {
-    private final Timer timer;
 
-    public TimerController(Timer timer) {
-        this.timer = timer;
+    @Autowired
+    @NonNull
+    private TimerService timerService;
+
+
+    public TimerController(TimerService timerService) {
+        this.timerService = timerService;
     }
 
-    //curl http://localhost:8080/api/timer
-    @GetMapping
-    public String getTimer() {
-        return timer.formatTime();
+    //curl http://localhost:8080/api/timer/id
+    @GetMapping()
+    public TimerDTO getTimer(@RequestParam Long id) {
+        return timerService.getTimerById(id);
     }
 
-    //curl -X POST http://localhost:8080/api/timer/start
+
+    //curl -X POST http://localhost:8080/api/timer/start/id
     @PostMapping("/start")
-    public void startTimer() {
-        timer.start(4000);
+    public TimerDTO startTimer(@RequestParam Long id) {
+        return timerService.startTimer(id);
     }
 
-    //curl -X POST http://localhost:8080/api/timer/stop
+    //curl -X POST http://localhost:8080/api/timer/stop/id
     @PostMapping("/stop")
-    public void stopTimer() {
-        timer.stop();
+    public void stopTimer(@RequestParam Long id) {
+        timerService.stopTimer(id);
     }
 
-    //curl -X POST http://localhost:8080/api/timer/reset
+    //curl -X POST http://localhost:8080/api/timer/reset/id
     @PostMapping("/reset")
-    public void resetTimer() {
-        timer.reset();
+    public void resetTimer(@RequestParam Long id) {
+        timerService.resetTimer(id);
+    }
+
+    @PostMapping("/fetch")
+    public TimerDTO fetchTime(@RequestParam Long id) {
+        return timerService.getTimerById(id);
     }
 }

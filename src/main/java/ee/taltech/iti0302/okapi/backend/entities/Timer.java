@@ -1,89 +1,72 @@
 package ee.taltech.iti0302.okapi.backend.entities;
 
-import org.springframework.stereotype.Component;
+import ee.taltech.iti0302.okapi.backend.states.TimerState;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Component
+import static ee.taltech.iti0302.okapi.backend.states.TimerState.*;
+
+
+@Getter
+@Setter
+@NoArgsConstructor
+@RequiredArgsConstructor
+@Entity
+@Table(name = "timers")
 public class Timer {
-    private int timeRemaining;
-    private boolean isRunning;
-    private boolean started;
 
-    public Timer() {
-        this.timeRemaining = 0; // Initialize to 0 seconds
-        this.isRunning = false;
-        started = false;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    @NonNull
+    @Column(nullable = false)
+    private Long seconds;
+//    @NonNull
+//    @Column(nullable = false)
+    //private TimerState state;
+
+    public synchronized void start(long seconds) {
+//        switch (state) {
+//            case PENDING -> {
+//                this.seconds = seconds;
+//                state = RUNNING;
+//            }
+//
+//            case RUNNING -> {
+//                Thread countdownThread = new Thread(() -> {
+//                    while (state.equals(RUNNING) && this.seconds > 0) {
+//                        try {
+//                            Thread.sleep(1000); // 1 second
+//                            this.seconds--;
+//                        } catch (InterruptedException e) {
+//                            throw new RuntimeException(e);
+//                        }
+//                    }
+//                    state = TimerState.PENDING;
+//                });
+//                countdownThread.start();
+//            }
+//
+//            case PAUSED -> {
+//                state = RUNNING;
+//            }
+//        }
     }
 
-    public synchronized int getTimeRemaining() {
-        return timeRemaining;
-    }
-
-    public synchronized boolean isRunning() {
-        return isRunning;
-    }
-
-    // Start countdown in seconds
-    public synchronized void start(int seconds) {
-        if (!started) {
-            if (!isRunning) {
-                timeRemaining = seconds;
-                isRunning = true;
-                started = true;
-                Thread countdownThread = new Thread(() -> {
-                    while (isRunning && timeRemaining > 0) {
-                        try {
-                            Thread.sleep(1000); // 1 second
-                            timeRemaining--;
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    isRunning = false;
-                    started = false;
-                });
-                countdownThread.start();
-            }
-        } else {
-            if (!isRunning) {
-                isRunning = true;
-                Thread countdownThread = new Thread(() -> {
-                    while (isRunning && timeRemaining > 0) {
-                        try {
-                            Thread.sleep(1000); // 1 second
-                            timeRemaining--;
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    isRunning = false;
-                    started = false;
-                });
-                countdownThread.start();
-            }
-        }
-    }
-
-    //curl -X POST http://localhost:8080/timer/stop
     public synchronized void stop() {
-        isRunning = false;
+        //state = PAUSED;
     }
 
     public synchronized void reset() {
-        timeRemaining = 1;
-        isRunning = false;
+        seconds = 1L;
+        //state = TimerState.PENDING;
 
     }
 
     public synchronized void update() {
         // Implement logic to decrement timer value
-        if (isRunning && timeRemaining > 0) {
-            timeRemaining--;
-        }
-    }
-
-    public synchronized String formatTime() {
-        int minutes = timeRemaining / 60;
-        int seconds = timeRemaining % 60;
-        return String.format("%02d:%02d", minutes, seconds);
+        //if (state.equals(RUNNING) && seconds > 0) {
+            seconds--;
+       // }
     }
 }

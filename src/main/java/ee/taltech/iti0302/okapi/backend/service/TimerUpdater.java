@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class TimerUpdater {
 
-    private Timer timer;
-
-    public TimerUpdater(Timer timer) {
-        this.timer = timer;
-    }
-
-    @Scheduled(fixedRate = 1000) // Run every 1 second
-    public void updateTimer() {
-        timer.update();
-    }
+//    private Timer timer;
+//
+//    public TimerUpdater(Timer timer) {
+//        this.timer = timer;
+//    }
+//
+//    @Scheduled(fixedRate = 1000) // Run every 1 second
+//    public void updateTimer() {
+//        timer.update();
+//    }
 }
