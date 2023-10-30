@@ -4,7 +4,7 @@ import ee.taltech.iti0302.okapi.backend.components.TaskMapper;
 import ee.taltech.iti0302.okapi.backend.dto.TaskDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Task;
 import ee.taltech.iti0302.okapi.backend.repository.TaskRepository;
-import ee.taltech.iti0302.okapi.backend.entities.TaskStatus;
+import ee.taltech.iti0302.okapi.backend.components.TaskStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +29,10 @@ public class TaskService {
         return task.map(TaskMapper.INSTANCE::toDTO).orElse(null);
     }
 
-    public void createTask(TaskDTO taskDTO) {
-        taskRepository.save(TaskMapper.INSTANCE.toEntity(taskDTO));
+    public TaskDTO createTask(TaskDTO taskDTO) {
+        Task task = TaskMapper.INSTANCE.toEntity(taskDTO);
+        task = taskRepository.save(task);
+        return TaskMapper.INSTANCE.toDTO(task);
     }
 
     public TaskDTO updateTask(long id, TaskDTO task) {
@@ -46,7 +48,7 @@ public class TaskService {
         return null;
     }
 
-    public TaskDTO statusTask(long id, TaskDTO task) {
+    public TaskDTO statusTask(long id) {
         Optional<Task> optionalTasks = taskRepository.findById(id);
         if (optionalTasks.isPresent()) {
             Task existingTask = optionalTasks.get();
