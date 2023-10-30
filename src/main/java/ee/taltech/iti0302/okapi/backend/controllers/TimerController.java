@@ -34,22 +34,22 @@ public class TimerController {
     }
 
     //curl -X POST http://localhost:8080/api/timer/stop/id
-    @PostMapping("/stop")
-    public void stopTimer(@RequestParam Long id) {
-        timerService.stopTimer(id);
-    }
+//    @PostMapping("/stop")
+//    public void stopTimer(@RequestParam Long id) {
+//        timerService.stopTimer(id);
+//    }
 
     //curl -X POST http://localhost:8080/api/timer/reset/id
-    @PostMapping("/reset")
-    public void resetTimer(@RequestParam Long id) {
-        timerService.resetTimer(id);
-    }
+//    @PostMapping("/reset")
+//    public void resetTimer(@RequestParam Long id) {
+//        timerService.resetTimer(id);
+//    }
 
-    @PostMapping("/fetch")
-    public Long fetchTime(@RequestParam Long id) {
-        TimerDTO dto = timerService.getTimerById(id);
-        if (dto != null)
-            return dto.getSeconds();
-        return null;
-    }
+//    @PostMapping("/fetch")
+//    public Long fetchTime(@RequestParam Long id) {
+//        TimerDTO dto = timerService.getTimerById(id);
+//        if (dto != null)
+//            return dto.getSeconds();
+//        return null;
+//    }
 }
