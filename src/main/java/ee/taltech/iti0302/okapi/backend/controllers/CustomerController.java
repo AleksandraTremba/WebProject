@@ -1,36 +1,43 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
+import ee.taltech.iti0302.okapi.backend.components.CustomerMapper;
 import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
-import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
+import ee.taltech.iti0302.okapi.backend.services.CustomerService;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("api/users")
 public class CustomerController {
-    
-    @Autowired
-    private CustomerRepository userRepository;
-
-    public CustomerController(CustomerRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @NonNull private CustomerRepository customerRepository;
+    @NonNull private CustomerService customerService;
 
     @PostMapping("login")
     public boolean login(@RequestBody CustomerDTO customer) {
-        return userRepository.existsByUsername(customer.getUsername());
+        return customerService.login(customer);
     }
 
     @PostMapping("register")
-    @ResponseStatus(HttpStatus.OK)
-    public void registerCustomer(@RequestBody CustomerDTO customer) {
-        userRepository.save(new Customer(customer.getUsername(), customer.getPassword()));
+    public CustomerDTO registerCustomer(@RequestBody CustomerDTO customer) {
+        return customerService.register(customer);
+    }
+
+    @PostMapping("update/username")
+    public CustomerDTO updateCustomerUsername(@RequestBody CustomerDTO customer) {
+        return customerService.updateUsername(customer);
+    }
+
+    @PostMapping("update/password")
+    public CustomerDTO updateCustomerPassword(@RequestBody CustomerDTO customer) {
+        return customerService.updatePassword(customer);
+    }
+
+    @DeleteMapping("delete")
+    public CustomerDTO deleteCustomer(@RequestBody CustomerDTO customer) {
+        return customerService.delete(customer);
     }
 }
