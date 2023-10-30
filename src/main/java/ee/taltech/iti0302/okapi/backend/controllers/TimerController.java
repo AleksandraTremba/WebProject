@@ -21,8 +21,8 @@ public class TimerController {
     }
 
     //curl http://localhost:8080/api/timer/id
-    @GetMapping()
-    public TimerDTO getTimer(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public TimerDTO getTimer(@PathVariable Long id) {
         return timerService.getTimerById(id);
     }
 
@@ -46,7 +46,10 @@ public class TimerController {
     }
 
     @PostMapping("/fetch")
-    public TimerDTO fetchTime(@RequestParam Long id) {
-        return timerService.getTimerById(id);
+    public Long fetchTime(@RequestParam Long id) {
+        TimerDTO dto = timerService.getTimerById(id);
+        if (dto != null)
+            return dto.getSeconds();
+        return null;
     }
 }
