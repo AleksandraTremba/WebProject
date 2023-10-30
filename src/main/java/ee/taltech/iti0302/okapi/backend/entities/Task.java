@@ -1,12 +1,9 @@
 package ee.taltech.iti0302.okapi.backend.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
+import static jakarta.persistence.EnumType.STRING;
 
 @Getter
 @Setter
@@ -23,6 +20,7 @@ public class Task {
     private String title;
     @NonNull
     private String description;
+    @Enumerated(STRING)
     @NonNull
     @Column(nullable = false)
     private TaskStatus status;
