@@ -29,8 +29,15 @@ public class TimerService {
         Optional<Timer> opTimer = timerRepository.findById(id);
         if (opTimer.isPresent()) {
             Timer timer = opTimer.get();
-            timer.setStartTime(LocalDateTime.now());
-            timer.setEndTime(timer.getStartTime().plusSeconds(60));
+            if (timer.getRemainingTime() > 0) {
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime newEndTime = now.plusSeconds(timer.getRemainingTime());
+                timer.setEndTime(newEndTime);
+            } else {
+                timer.setStartTime(LocalDateTime.now());
+                timer.setEndTime(timer.getStartTime().plusSeconds(60));
+            }
+            timer.setRemainingTime(0);
             timerRepository.save(timer);
             return TimerMapper.INSTANCE.toDTO(timer);
         } else {
@@ -41,6 +48,27 @@ public class TimerService {
             return TimerMapper.INSTANCE.toDTO(timer);
         }
     }
+
+    public TimerDTO stopTimer(Long id) {
+        Optional<Timer> opTimer = timerRepository.findById(id);
+        if (opTimer.isPresent()) {
+            Timer timer = opTimer.get();
+
+            if (timer.getStartTime() != null && timer.getEndTime() != null) {
+                LocalDateTime now = LocalDateTime.now();
+                long remainingTime =  ChronoUnit.SECONDS.between(now, timer.getEndTime());
+                if (remainingTime > 0) {
+                    timer.setRemainingTime(remainingTime);
+                } else {
+                    timer.setRemainingTime(0);
+                }
+            }
+            timerRepository.save(timer);
+            return TimerMapper.INSTANCE.toDTO(timer);
+        }
+        return null;
+    }
+
 
 //    public TimerDTO startTimer(Long id) {
 //        Optional<Timer> opTimer = timerRepository.findById(id);

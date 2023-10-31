@@ -27,4 +27,6 @@ public class Timer {
     @Column(nullable = false)
     private LocalDateTime endTime;
 
+    private long remainingTime = 0;
+
 }

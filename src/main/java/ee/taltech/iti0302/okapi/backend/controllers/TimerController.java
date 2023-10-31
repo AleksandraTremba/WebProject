@@ -34,10 +34,10 @@ public class TimerController {
     }
 
     //curl -X POST http://localhost:8080/api/timer/stop/id
-//    @PostMapping("/stop")
-//    public void stopTimer(@RequestParam Long id) {
-//        timerService.stopTimer(id);
-//    }
+    @PostMapping("/stop")
+    public TimerDTO stopTimer(@RequestParam Long id) {
+        return timerService.stopTimer(id);
+    }
 
     //curl -X POST http://localhost:8080/api/timer/reset/id
 //    @PostMapping("/reset")
