@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
@@ -27,6 +28,11 @@ public class CustomerService {
 
     private boolean validPassword(CustomerDTO customer) {
         return customerRepository.findByUsername(customer.getUsername()).getPassword().equals(customer.getPassword());
+    }
+
+    public CustomerDTO getCustomerData(Long id) {
+        Optional<Customer> dataShell = customerRepository.findById(id);
+        return dataShell.map(CustomerMapper.INSTANCE::toDTO).orElse(null);
     }
 
     public boolean login(CustomerDTO customer) {
@@ -64,8 +70,6 @@ public class CustomerService {
                         return customer;
                     }
                 }
-
-                default -> { }
             }
         }
 
