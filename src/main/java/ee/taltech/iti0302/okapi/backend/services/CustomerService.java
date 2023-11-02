@@ -4,14 +4,12 @@ import ee.taltech.iti0302.okapi.backend.components.CustomerMapper;
 import ee.taltech.iti0302.okapi.backend.components.CustomerServiceUpdate;
 import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 @Service
@@ -26,13 +24,23 @@ public class CustomerService {
         return customer.getPassword().equals(testPassword);
     }
 
-    private boolean validPassword(CustomerDTO customer) {
-        return customerRepository.findByUsername(customer.getUsername()).getPassword().equals(customer.getPassword());
+    private void eraseCustomerPassword(CustomerDTO dto) {
+        dto.setPassword("");
     }
 
-    public CustomerDTO getCustomerData(Long id) {
-        Optional<Customer> dataShell = customerRepository.findById(id);
-        return dataShell.map(CustomerMapper.INSTANCE::toDTO).orElse(null);
+    private boolean validPassword(CustomerDTO customer) {
+        Optional<Customer> customerOptional = customerRepository.findByUsername(customer.getUsername());
+        return customerOptional.map(value -> value.getPassword().equals(customer.getPassword())).orElse(false);
+    }
+
+    public CustomerDTO getCustomerData(String username) {
+        Optional<Customer> dataShell = customerRepository.findByUsername(username);
+        if (dataShell.isPresent()) {
+            CustomerDTO dto = CustomerMapper.INSTANCE.toDTO(dataShell.get());
+            eraseCustomerPassword(dto);
+            return dto;
+        }
+        return null;
     }
 
     public boolean login(CustomerDTO customer) {
@@ -48,28 +56,25 @@ public class CustomerService {
     }
 
     public CustomerDTO update(CustomerDTO customer, CustomerServiceUpdate updateType) {
-        if (customerExists(customer.getUsername())) {
-            Customer dataShell = customerRepository.findByUsername(customer.getUsername());
-            switch (updateType) {
-                case CHANGE_USERNAME -> {
-                    if (validPassword(dataShell, customer.getPassword())) {
-                        dataShell.setUsername(customer.getNewUsername());
-                        customer.setUsername(customer.getNewUsername());
-                        customerRepository.save(dataShell);
+        Optional<Customer> customerOptional = customerRepository.findByUsername(customer.getUsername());
+        if (customerOptional.isPresent()) {
+            Customer dataShell = customerOptional.get();
+            if (updateType.equals(CustomerServiceUpdate.CHANGE_USERNAME) && (validPassword(dataShell, customer.getPassword()))) {
+                    dataShell.setUsername(customer.getNewUsername());
+                    customer.setUsername(customer.getNewUsername());
+                    customerRepository.save(dataShell);
 
-                        return customer;
-                    }
-                }
+                    return customer;
 
-                case CHANGE_PASSWORD -> {
-                    if (validPassword(dataShell, customer.getPassword())) {
-                        dataShell.setPassword(customer.getNewPassword());
-                        customer.setPassword(customer.getNewPassword());
-                        customerRepository.save(dataShell);
+            }
 
-                        return customer;
-                    }
-                }
+            if (updateType.equals(CustomerServiceUpdate.CHANGE_PASSWORD) && (validPassword(dataShell, customer.getPassword()))) {
+                    dataShell.setPassword(customer.getNewPassword());
+                    customer.setPassword(customer.getNewPassword());
+                    customerRepository.save(dataShell);
+
+                    return customer;
+
             }
         }
 
@@ -90,8 +95,9 @@ public class CustomerService {
     }
 
     public CustomerDTO delete(CustomerDTO customer) {
-        if (customerExists(customer.getUsername())) {
-            Customer dataShell = customerRepository.findByUsername(customer.getUsername());
+        Optional<Customer> customerOptional = customerRepository.findByUsername(customer.getUsername());
+        if (customerOptional.isPresent()) {
+            Customer dataShell = customerOptional.get();
             if (validPassword(dataShell, customer.getPassword())) {
                 customerRepository.delete(dataShell);
                 return customer;
