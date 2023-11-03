@@ -9,12 +9,18 @@ import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 import ee.taltech.iti0302.okapi.backend.services.CustomerService;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/users")
 public class CustomerController {
     @NonNull private CustomerRepository customerRepository;
     @NonNull private CustomerService customerService;
+
+    @GetMapping("/{username}")
+    public CustomerDTO getData(@PathVariable String username) {
+        return customerService.getCustomerData(username);
+    }
 
     @PostMapping("login")
     public boolean login(@RequestBody CustomerDTO customer) {
