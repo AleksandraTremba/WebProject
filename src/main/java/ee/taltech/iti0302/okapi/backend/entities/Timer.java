@@ -11,25 +11,20 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "timers")
 public class Timer {
-
-    @Getter
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
     @Setter
     @NonNull
     @Column(nullable = false)
     private LocalDateTime startTime;
 
-    @Getter
     @Setter
     @NonNull
     @Column(nullable = false)
     private LocalDateTime endTime;
 
-    @Getter
     @Setter
     private long remainingTime = 0;
 

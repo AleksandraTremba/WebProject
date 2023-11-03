@@ -2,21 +2,17 @@ package ee.taltech.iti0302.okapi.backend.controllers;
 
 import ee.taltech.iti0302.okapi.backend.dto.TimerDTO;
 import ee.taltech.iti0302.okapi.backend.service.TimerService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/timer")
 public class TimerController {
-
     @NonNull
-    private TimerService timerService;
-
-
-    public TimerController(TimerService timerService) {
-        this.timerService = timerService;
-    }
+    private final TimerService timerService;
 
     //curl http://localhost:8080/api/timer
     @GetMapping("/{id}")
@@ -41,18 +37,4 @@ public class TimerController {
     public TimerDTO createTimer() {
         return timerService.createTimer();
     }
-
-    //curl -X POST http://localhost:8080/api/timer/reset/id
-//    @PostMapping("/reset")
-//    public void resetTimer(@RequestParam Long id) {
-//        timerService.resetTimer(id);
-//    }
-
-//    @PostMapping("/fetch")
-//    public Long fetchTime(@RequestParam Long id) {
-//        TimerDTO dto = timerService.getTimerById(id);
-//        if (dto != null)
-//            return dto.getSeconds();
-//        return null;
-//    }
 }
