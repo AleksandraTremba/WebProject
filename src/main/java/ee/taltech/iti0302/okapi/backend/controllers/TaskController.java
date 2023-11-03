@@ -26,19 +26,19 @@ public class TaskController {
         return taskService.getTaskById(id);
     }
 
-    @PostMapping
+    @PutMapping("/create")
     public TaskDTO createTask(@RequestBody TaskDTO taskDTO) {
         return taskService.createTask(taskDTO);
     }
 
-    @PutMapping("/{id}")
-    public TaskDTO updateTask(@PathVariable long id, @RequestBody TaskDTO taskDTO) {
-        return taskService.updateTask(id, taskDTO);
+    @PostMapping("/update")
+    public TaskDTO updateTask(@RequestBody TaskDTO taskDTO) {
+        return taskService.updateTask(taskDTO);
     }
 
     @PatchMapping("/{id}/status")
     public TaskDTO updateTaskStatus(@PathVariable long id) {
-        return taskService.statusTask(id);
+        return taskService.updateTaskStatus(id);
     }
 
     @DeleteMapping("/{id}")

@@ -6,14 +6,10 @@ import lombok.*;
 @NoArgsConstructor
 @RequiredArgsConstructor
 public class CustomerDTO {
+    @NonNull private Long id;
     @NonNull private String username;
     @NonNull private String password;
 
-    @Getter
-    @Setter
     private String newUsername;
-
-    @Getter
-    @Setter
     private String newPassword;
 }

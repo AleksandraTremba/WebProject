@@ -1,7 +1,9 @@
-package ee.taltech.iti0302.okapi.backend.service;
+package ee.taltech.iti0302.okapi.backend.services;
 
 import ee.taltech.iti0302.okapi.backend.components.TimerMapper;
+import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.TimerDTO;
+import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.entities.Timer;
 import ee.taltech.iti0302.okapi.backend.repository.TimerRepository;
 import lombok.NonNull;
@@ -58,8 +60,9 @@ public class TimerService {
         return null;
     }
 
-    public TimerDTO createTimer() {
+    public TimerDTO createTimer(Long customerId) {
         TimerDTO timerDTO = new TimerDTO();
+        timerDTO.setCustomerId(customerId);
         timerDTO.setStartTime(LocalDateTime.now());
         timerDTO.setEndTime(timerDTO.getStartTime().plusSeconds(60));
         Timer timer = timerRepository.save(TimerMapper.INSTANCE.toEntity(timerDTO));

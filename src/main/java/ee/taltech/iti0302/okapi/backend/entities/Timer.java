@@ -5,14 +5,14 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Getter
 @NoArgsConstructor
 @RequiredArgsConstructor
-@Getter
 @Entity
 @Table(name = "timers")
 public class Timer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Setter
@@ -28,4 +28,8 @@ public class Timer {
     @Setter
     private long remainingTime = 0;
 
+    @Setter
+    @NonNull
+    @Column(nullable = false)
+    private Long customerId;
 }

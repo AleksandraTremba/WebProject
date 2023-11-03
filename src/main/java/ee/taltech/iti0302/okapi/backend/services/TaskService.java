@@ -5,23 +5,28 @@ import ee.taltech.iti0302.okapi.backend.dto.TaskDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Task;
 import ee.taltech.iti0302.okapi.backend.repository.TaskRepository;
 import ee.taltech.iti0302.okapi.backend.components.TaskStatus;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 @Service
 public class TaskService {
-    private final TaskRepository taskRepository;
+    @NonNull
+    private TaskRepository taskRepository;
+
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     public List<TaskDTO> getAllTasks() {
         List<Task> task = (List<Task>) taskRepository.findAll();
         return task.stream()
                 .map(TaskMapper.INSTANCE::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public TaskDTO getTaskById(long id) {
@@ -29,18 +34,23 @@ public class TaskService {
         return task.map(TaskMapper.INSTANCE::toDTO).orElse(null);
     }
 
-    public TaskDTO createTask(TaskDTO taskDTO) {
-        Task task = TaskMapper.INSTANCE.toEntity(taskDTO);
-        task = taskRepository.save(task);
-        return TaskMapper.INSTANCE.toDTO(task);
+    public TaskDTO createTask(TaskDTO dto) {
+        Task task = taskRepository.save(TaskMapper.INSTANCE.toEntity(dto));
+        dto.setId(task.getId());
+        if (task.getId() != null) {
+            logger.info(task.getId().toString());
+            return dto;
+        }
+        logger.log(Level.SEVERE, "Task was probably not created!");
+        return null;
     }
 
-    public TaskDTO updateTask(long id, TaskDTO task) {
-        Optional<Task> optionalTask = taskRepository.findById(id);
+    public TaskDTO updateTask(TaskDTO dto) {
+        Optional<Task> optionalTask = taskRepository.findById(dto.getId());
         if (optionalTask.isPresent()) {
             Task existingTask = optionalTask.get();
-            existingTask.setTitle(task.getTitle());
-            existingTask.setDescription(task.getDescription());
+            existingTask.setTitle(dto.getTitle());
+            existingTask.setDescription(dto.getDescription());
 
             Task updatedTask = taskRepository.save(existingTask);
             return TaskMapper.INSTANCE.toDTO(updatedTask);
@@ -48,7 +58,7 @@ public class TaskService {
         return null;
     }
 
-    public TaskDTO statusTask(long id) {
+    public TaskDTO updateTaskStatus(long id) {
         Optional<Task> optionalTasks = taskRepository.findById(id);
         if (optionalTasks.isPresent()) {
             Task existingTask = optionalTasks.get();

@@ -9,20 +9,28 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "customers")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @NonNull
+    @Setter
     @Column(nullable = false, unique = true)
     private String username;
+
     @NonNull
+    @Setter
     @Column(nullable = false)
     private String password;
 
+    @Setter
+    private Long timerId;
+
+    @Setter
+    private Long groupId;
 }

@@ -4,11 +4,9 @@ import ee.taltech.iti0302.okapi.backend.components.TaskStatus;
 import lombok.*;
 
 @Data
-@Getter
-@Setter
-@AllArgsConstructor
 public class TaskDTO {
-    private long id;
+    private Long id;
+    private Long customerId;
     private String title;
     private String description;
     private TaskStatus status;

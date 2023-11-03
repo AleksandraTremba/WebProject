@@ -17,7 +17,7 @@ public class CustomerController {
     @NonNull private CustomerRepository customerRepository;
     @NonNull private CustomerService customerService;
 
-    @GetMapping("/{username}")
+    @GetMapping("{username}")
     public CustomerDTO getData(@PathVariable String username) {
         return customerService.getCustomerData(username);
     }
@@ -27,7 +27,7 @@ public class CustomerController {
         return customerService.login(customer);
     }
 
-    @PostMapping("register")
+    @PutMapping("register")
     public CustomerDTO registerCustomer(@RequestBody CustomerDTO customer) {
         return customerService.register(customer);
     }

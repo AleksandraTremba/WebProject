@@ -16,9 +16,10 @@ import java.util.Optional;
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
-    public boolean customerExists(String username) {
+    private boolean customerExists(String username) {
         return customerRepository.existsByUsername(username);
     }
+    private boolean customerExists(Long id) { return customerRepository.existsById(id); }
 
     private boolean validPassword(Customer customer, String testPassword) {
         return customer.getPassword().equals(testPassword);
@@ -29,7 +30,7 @@ public class CustomerService {
     }
 
     private boolean validPassword(CustomerDTO customer) {
-        Optional<Customer> customerOptional = customerRepository.findByUsername(customer.getUsername());
+        Optional<Customer> customerOptional = customerRepository.findById(customer.getId());
         return customerOptional.map(value -> value.getPassword().equals(customer.getPassword())).orElse(false);
     }
 
@@ -56,25 +57,25 @@ public class CustomerService {
     }
 
     public CustomerDTO update(CustomerDTO customer, CustomerServiceUpdate updateType) {
-        Optional<Customer> customerOptional = customerRepository.findByUsername(customer.getUsername());
+        Optional<Customer> customerOptional = customerRepository.findById(customer.getId());
         if (customerOptional.isPresent()) {
             Customer dataShell = customerOptional.get();
-            if (updateType.equals(CustomerServiceUpdate.CHANGE_USERNAME) && (validPassword(dataShell, customer.getPassword()))) {
+            if (validPassword(dataShell, customer.getPassword())) {
+                if (updateType.equals(CustomerServiceUpdate.CHANGE_USERNAME)) {
                     dataShell.setUsername(customer.getNewUsername());
                     customer.setUsername(customer.getNewUsername());
                     customerRepository.save(dataShell);
 
                     return customer;
+                }
 
-            }
-
-            if (updateType.equals(CustomerServiceUpdate.CHANGE_PASSWORD) && (validPassword(dataShell, customer.getPassword()))) {
+                if (updateType.equals(CustomerServiceUpdate.CHANGE_PASSWORD)) {
                     dataShell.setPassword(customer.getNewPassword());
                     customer.setPassword(customer.getNewPassword());
                     customerRepository.save(dataShell);
 
                     return customer;
-
+                }
             }
         }
 
@@ -95,11 +96,11 @@ public class CustomerService {
     }
 
     public CustomerDTO delete(CustomerDTO customer) {
-        Optional<Customer> customerOptional = customerRepository.findByUsername(customer.getUsername());
+        Optional<Customer> customerOptional = customerRepository.findById(customer.getId());
         if (customerOptional.isPresent()) {
             Customer dataShell = customerOptional.get();
             if (validPassword(dataShell, customer.getPassword())) {
-                customerRepository.delete(dataShell);
+                customerRepository.deleteById(dataShell.getId());
                 return customer;
             }
         }
