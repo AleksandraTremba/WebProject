@@ -3,7 +3,6 @@ package ee.taltech.iti0302.okapi.backend.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data

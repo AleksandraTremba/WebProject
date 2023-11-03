@@ -4,10 +4,8 @@ import ee.taltech.iti0302.okapi.backend.components.TimerMapper;
 import ee.taltech.iti0302.okapi.backend.dto.TimerDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Timer;
 import ee.taltech.iti0302.okapi.backend.repository.TimerRepository;
-import ee.taltech.iti0302.okapi.backend.states.TimerState;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,7 +16,6 @@ import java.util.Optional;
 @Service
 public class TimerService {
     @NonNull
-    @Autowired
     private TimerRepository timerRepository;
 
     public TimerDTO getTimerById(Long id) {
@@ -40,13 +37,8 @@ public class TimerService {
             timer.setRemainingTime(0);
             timerRepository.save(timer);
             return TimerMapper.INSTANCE.toDTO(timer);
-        } else {
-            Timer timer = new Timer();
-            timer.setStartTime(LocalDateTime.now());
-            timer.setEndTime(timer.getStartTime().plusSeconds(60));
-            timerRepository.save(timer);
-            return TimerMapper.INSTANCE.toDTO(timer);
         }
+        return null;
     }
 
     public TimerDTO stopTimer(Long id) {
@@ -69,6 +61,14 @@ public class TimerService {
         return null;
     }
 
+    public TimerDTO createTimer() {
+        TimerDTO timerDTO = new TimerDTO();
+        timerDTO.setStartTime(LocalDateTime.now());
+        timerDTO.setEndTime(timerDTO.getStartTime().plusSeconds(60));
+        Timer timer = timerRepository.save(TimerMapper.INSTANCE.toEntity(timerDTO));
+        timerDTO.setId(timer.getId());
+        return timerDTO;
+    }
 
 //    public TimerDTO startTimer(Long id) {
 //        Optional<Timer> opTimer = timerRepository.findById(id);

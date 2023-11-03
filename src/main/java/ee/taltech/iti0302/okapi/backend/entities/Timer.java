@@ -1,32 +1,36 @@
 package ee.taltech.iti0302.okapi.backend.entities;
 
-import ee.taltech.iti0302.okapi.backend.states.TimerState;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-import static ee.taltech.iti0302.okapi.backend.states.TimerState.*;
-
-
-@Getter
-@Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@Getter
 @Entity
 @Table(name = "timers")
 public class Timer {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Getter
+    @Setter
     @NonNull
     @Column(nullable = false)
     private LocalDateTime startTime;
+
+    @Getter
+    @Setter
     @NonNull
     @Column(nullable = false)
     private LocalDateTime endTime;
 
+    @Getter
+    @Setter
     private long remainingTime = 0;
 
 }

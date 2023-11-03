@@ -2,7 +2,6 @@ package ee.taltech.iti0302.okapi.backend.controllers;
 
 import ee.taltech.iti0302.okapi.backend.dto.TimerDTO;
 import ee.taltech.iti0302.okapi.backend.service.TimerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/timer")
 public class TimerController {
 
-    @Autowired
     @NonNull
     private TimerService timerService;
 
@@ -20,23 +18,28 @@ public class TimerController {
         this.timerService = timerService;
     }
 
-    //curl http://localhost:8080/api/timer/id
+    //curl http://localhost:8080/api/timer
     @GetMapping("/{id}")
     public TimerDTO getTimer(@PathVariable Long id) {
         return timerService.getTimerById(id);
     }
 
 
-    //curl -X POST http://localhost:8080/api/timer/start/id
+    //curl -X POST http://localhost:8080/api/timer/start&id?=
     @PostMapping("/start")
     public TimerDTO startTimer(@RequestParam Long id) {
         return timerService.startTimer(id);
     }
 
-    //curl -X POST http://localhost:8080/api/timer/stop/id
+    //curl -X POST http://localhost:8080/api/timer/stop&id?=
     @PostMapping("/stop")
     public TimerDTO stopTimer(@RequestParam Long id) {
         return timerService.stopTimer(id);
+    }
+
+    @PostMapping("/create")
+    public TimerDTO createTimer() {
+        return timerService.createTimer();
     }
 
     //curl -X POST http://localhost:8080/api/timer/reset/id
