@@ -30,6 +30,7 @@ public class TaskService {
     }
 
     public TaskDTO createTask(TaskDTO dto) {
+        logger.info(dto.toString());
         Task task = taskRepository.save(TaskMapper.INSTANCE.toEntity(dto));
         dto.setId(task.getId());
         if (task.getId() != null) {
