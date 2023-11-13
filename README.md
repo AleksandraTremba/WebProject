@@ -1,92 +1,370 @@
-# Okapi Backend
+# Project Okapi
 
-
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.cs.taltech.ee/mausma/iti0302-2023-backend.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.cs.taltech.ee/mausma/iti0302-2023-backend/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+## Purpose
+The goal of the project is to make an easy-to-use platform where students can
+track their time spent studying and completed tasks.
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### Requirements
+In order to get backend up and running, the system must have the following dependencies installed:
+* OpenJDK 17
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### Building
+Note: Internet connectivity is required to download dependencies. Without it
+the source will not compile.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+From the root of the source, run:
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+`./mvnw clean install spring-boot:repackage`
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+After the task is completed, the `backend-SNAPSHOT` JAR file is created. In order to run it, open
+from the `target` folder and run:
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+`java -jar  *.jar`
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+## Features
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+**Profile**
+* Registers a user and saves his data in the database
+* Logs in the user, checks if the provided password is correct
+* Updates user data including when entering the correct password
+* Deletes a user
+* When requesting /{username}, gets public data (e.g. username, description, etc)
 
-## License
-For open source projects, say how it is licensed.
+**Tasks**
+* Creates task with unique id and saves it in the database
+* Tasks have a name, description and status
+* Updates task with new name and description and saves the change in the database
+* Updates the status of the task
+* Deletes the task
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+**Timer**
+* Creates timer with unique id
+* Starts timer and saves start time and end time in the database
+* Stops timer, calculating the remaining time before the end time
+* Updates the end time in database if the timer is continuing counting
+
+# Usage
+Every single requests is sent in a form `http://localhost:8080/api` + `{endpointName}`,
+where endpoint is the one specified in the mapping.
+
+**Profile**
+```java
+@GetMapping("/{username}")
+public CustomerDTO getData(@PathVariable String username) {
+    return customerService.getCustomerData(username);
+}
+```
+```java
+public CustomerDTO getCustomerData(String username) {
+    Optional<Customer> dataShell = customerRepository.findByUsername(username);
+    if (dataShell.isPresent()) {
+        CustomerDTO dto = CustomerMapper.INSTANCE.toDTO(dataShell.get());
+        eraseCustomerPassword(dto);
+        return dto;
+    }
+    return null;
+}
+```
+```java
+@PostMapping("login")
+public boolean login(@RequestBody CustomerDTO customer) {
+    return customerService.login(customer);
+}
+```
+```java
+public boolean login(CustomerDTO customer) {
+    return customerExists(customer.getUsername()) && validPassword(customer);
+}
+```
+```java
+@PostMapping("register")
+public CustomerDTO registerCustomer(@RequestBody CustomerDTO customer) {
+    return customerService.register(customer);
+}
+```
+```java
+public CustomerDTO register(CustomerDTO customer) {
+    if (!customerExists(customer.getUsername())) {
+        customerRepository.save(CustomerMapper.INSTANCE.toEntity(customer));
+        return customer;
+    }
+    return null;
+}
+
+```
+```java
+@PostMapping("update/username")
+public CustomerDTO updateCustomerUsername(@RequestBody CustomerDTO customer) {
+    return customerService.updateUsername(customer);
+}
+```
+```java
+@PostMapping("update/password")
+public CustomerDTO updateCustomerPassword(@RequestBody CustomerDTO customer) {
+    return customerService.updatePassword(customer);
+}
+```
+```java
+public CustomerDTO update(CustomerDTO customer, CustomerServiceUpdate updateType) {
+    Optional<Customer> customerOptional = customerRepository.findByUsername(customer.getUsername());
+    if (customerOptional.isPresent()) {
+        Customer dataShell = customerOptional.get();
+        if (updateType.equals(CustomerServiceUpdate.CHANGE_USERNAME) && (validPassword(dataShell, customer.getPassword()))) {
+                dataShell.setUsername(customer.getNewUsername());
+                customer.setUsername(customer.getNewUsername());
+                customerRepository.save(dataShell);
+
+                return customer;
+
+        }
+
+        if (updateType.equals(CustomerServiceUpdate.CHANGE_PASSWORD) && (validPassword(dataShell, customer.getPassword()))) {
+                dataShell.setPassword(customer.getNewPassword());
+                customer.setPassword(customer.getNewPassword());
+                customerRepository.save(dataShell);
+
+                return customer;
+
+        }
+    }
+
+    return null;
+}
+
+public CustomerDTO updateUsername(CustomerDTO customer) {
+    // Check whether the desired username is taken
+    if (customerExists(customer.getNewUsername())) {
+        return null;
+    }
+
+    return update(customer, CustomerServiceUpdate.CHANGE_USERNAME);
+}
+
+public CustomerDTO updatePassword(CustomerDTO customer) {
+    return update(customer, CustomerServiceUpdate.CHANGE_PASSWORD);
+}
+
+```
+```java
+@DeleteMapping("delete")
+public CustomerDTO deleteCustomer(@RequestBody CustomerDTO customer) {
+    return customerService.delete(customer);
+}
+```
+```java
+public CustomerDTO delete(CustomerDTO customer) {
+    Optional<Customer> customerOptional = customerRepository.findByUsername(customer.getUsername());
+    if (customerOptional.isPresent()) {
+        Customer dataShell = customerOptional.get();
+        if (validPassword(dataShell, customer.getPassword())) {
+            customerRepository.delete(dataShell);
+            return customer;
+        }
+    }
+
+    return null;
+}
+```
+
+**Tasks**
+```java
+@GetMapping
+public List<TaskDTO> getAllTasks() {
+    return taskService.getAllTasks();
+}
+```
+```java
+public List<TaskDTO> getAllTasks() {
+    List<Task> task = (List<Task>) taskRepository.findAll();
+    return task.stream()
+    .map(TaskMapper.INSTANCE::toDTO)
+    .collect(Collectors.toList());
+}
+```
+```java
+@GetMapping("/{id}")
+public TaskDTO getTaskById(@PathVariable long id) {
+    return taskService.getTaskById(id);
+}
+```
+```java
+public TaskDTO getTaskById(long id) {
+    Optional<Task> task = taskRepository.findById(id);
+    return task.map(TaskMapper.INSTANCE::toDTO).orElse(null);
+}
+
+```
+```java
+@PostMapping
+public TaskDTO createTask(@RequestBody TaskDTO taskDTO) {
+    return taskService.createTask(taskDTO);
+}
+```
+```java
+public TaskDTO createTask(TaskDTO taskDTO) {
+    Task task = TaskMapper.INSTANCE.toEntity(taskDTO);
+    task = taskRepository.save(task);
+    return TaskMapper.INSTANCE.toDTO(task);
+}
+
+```
+```java
+@PutMapping("/{id}")
+public TaskDTO updateTask(@PathVariable long id, @RequestBody TaskDTO taskDTO) {
+    return taskService.updateTask(id, taskDTO);
+}
+```
+```java
+public TaskDTO updateTask(long id, TaskDTO task) {
+    Optional<Task> optionalTask = taskRepository.findById(id);
+        if (optionalTask.isPresent()) {
+            Task existingTask = optionalTask.get();
+            existingTask.setTitle(task.getTitle());
+            existingTask.setDescription(task.getDescription());
+            Task updatedTask = taskRepository.save(existingTask);
+            return TaskMapper.INSTANCE.toDTO(updatedTask);
+        }
+        return null;
+}
+
+```
+```java
+@PatchMapping("/{id}/status")
+public TaskDTO updateTaskStatus(@PathVariable long id) {
+    return taskService.statusTask(id);
+}
+```
+```java
+public TaskDTO statusTask(long id) {
+    Optional<Task> optionalTasks = taskRepository.findById(id);
+        if (optionalTasks.isPresent()) {
+        Task existingTask = optionalTasks.get();
+        TaskStatus status = existingTask.getStatus();
+            if (status == TaskStatus.TODO) {
+            existingTask.setStatus(TaskStatus.WORKING);
+            } else if (status == TaskStatus.WORKING) {
+            existingTask.setStatus(TaskStatus.DONE);
+            } else if (status == TaskStatus.DONE) {
+            existingTask.setStatus(TaskStatus.TODO);
+            }
+        taskRepository.save(existingTask);
+        return TaskMapper.INSTANCE.toDTO(existingTask);
+        }
+    return null;
+    }
+
+```
+```java
+@DeleteMapping("/{id}")
+public void deleteTask(@PathVariable long id) {
+    taskService.deleteTask(id);
+}
+```
+```java
+public void deleteTask(long id) {
+    taskRepository.deleteById(id);
+}
+```
+
+**Timer**
+
+```java
+@GetMapping("/{id}")
+public TimerDTO getTimer(@PathVariable Long id) {
+    return timerService.getTimerById(id);
+}
+```
+```java
+public TimerDTO getTimerById(Long id) {
+    return TimerMapper.INSTANCE.toDTO(timerRepository.findById(id).orElse(null));
+}
+
+```
+```java
+
+//curl -X POST http://localhost:8080/api/timer/start&id?=
+@PostMapping("/start")
+public TimerDTO startTimer(@RequestParam Long id) {
+    return timerService.startTimer(id);
+}
+```
+```java
+public TimerDTO startTimer(Long id) {
+    Optional<Timer> opTimer = timerRepository.findById(id);
+        if (opTimer.isPresent()) {
+        Timer timer = opTimer.get();
+            if (timer.getRemainingTime() > 0) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime newEndTime = now.plusSeconds(timer.getRemainingTime());
+            timer.setEndTime(newEndTime);
+            } else {
+            timer.setStartTime(LocalDateTime.now());
+            timer.setEndTime(timer.getStartTime().plusSeconds(60));
+            }
+        timer.setRemainingTime(0);
+        timerRepository.save(timer);
+        return TimerMapper.INSTANCE.toDTO(timer);
+        }
+    return null;
+}
+
+```
+```java
+//curl -X POST http://localhost:8080/api/timer/stop&id?=
+@PostMapping("/stop")
+public TimerDTO stopTimer(@RequestParam Long id) {
+    return timerService.stopTimer(id);
+}
+```
+```java
+public TimerDTO stopTimer(Long id) {
+    Optional<Timer> opTimer = timerRepository.findById(id);
+        if (opTimer.isPresent()) {
+        Timer timer = opTimer.get();
+        LocalDateTime now = LocalDateTime.now();
+        long remainingTime =  ChronoUnit.SECONDS.between(now, timer.getEndTime());
+            if (remainingTime > 0) {
+            timer.setRemainingTime(remainingTime);
+            } else {
+            timer.setRemainingTime(0);
+            }
+        timerRepository.save(timer);
+        return TimerMapper.INSTANCE.toDTO(timer);
+        }
+    return null;
+}
+
+```
+```java
+@PostMapping("/create")
+public TimerDTO createTimer() {
+    return timerService.createTimer();
+}
+```
+```java
+public TimerDTO createTimer() {
+    TimerDTO timerDTO = new TimerDTO();
+    timerDTO.setStartTime(LocalDateTime.now());
+    timerDTO.setEndTime(timerDTO.getStartTime().plusSeconds(60));
+    Timer timer = timerRepository.save(TimerMapper.INSTANCE.toEntity(timerDTO));
+    timerDTO.setId(timer.getId());
+    return timerDTO;
+}
+```
+
+
+
+# Roadmap
+Features we will finish developing until the end of project:
+* User's *time spent studying* will be saved as a **total time**.
+* Users will be able to form study/working groups
+* Each study group will have a unified task management system
+* Groups will have a scoreboard so students can compete with each other
+* PassKey support to drop passwords altogether
+* Quick Notes
+* Offline support
+* Mobile-first interface
+* GitLab support (tasks = issues && automatic `/spent` when timer is stopped)
+* Dynamic background (wallpaper changes according to student's preferences)
