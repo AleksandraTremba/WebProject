@@ -1,9 +1,7 @@
 package ee.taltech.iti0302.okapi.backend.services;
 
 import ee.taltech.iti0302.okapi.backend.components.TimerMapper;
-import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.TimerDTO;
-import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.entities.Timer;
 import ee.taltech.iti0302.okapi.backend.repository.TimerRepository;
 import lombok.NonNull;

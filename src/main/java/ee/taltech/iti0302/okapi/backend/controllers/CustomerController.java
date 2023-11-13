@@ -4,18 +4,16 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import ee.taltech.iti0302.okapi.backend.components.CustomerMapper;
 import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
-import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 import ee.taltech.iti0302.okapi.backend.services.CustomerService;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/users")
+@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class CustomerController {
-    @NonNull private CustomerRepository customerRepository;
-    @NonNull private CustomerService customerService;
+    @NonNull
+    private CustomerService customerService;
 
     @GetMapping("{username}")
     public CustomerDTO getData(@PathVariable String username) {

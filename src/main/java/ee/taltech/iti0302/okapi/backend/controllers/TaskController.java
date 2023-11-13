@@ -10,8 +10,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/tasks")
-@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("api/tasks")
+@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class TaskController {
     @NonNull
     private TaskService taskService;
@@ -34,11 +34,6 @@ public class TaskController {
     @PostMapping("/update")
     public TaskDTO updateTask(@RequestBody TaskDTO taskDTO) {
         return taskService.updateTask(taskDTO);
-    }
-
-    @PatchMapping("/{id}/status")
-    public TaskDTO updateTaskStatus(@PathVariable long id) {
-        return taskService.updateTaskStatus(id);
     }
 
     @DeleteMapping("/{id}")

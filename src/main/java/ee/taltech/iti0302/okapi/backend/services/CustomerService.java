@@ -19,7 +19,6 @@ public class CustomerService {
     private boolean customerExists(String username) {
         return customerRepository.existsByUsername(username);
     }
-    private boolean customerExists(Long id) { return customerRepository.existsById(id); }
 
     private boolean validPassword(Customer customer, String testPassword) {
         return customer.getPassword().equals(testPassword);

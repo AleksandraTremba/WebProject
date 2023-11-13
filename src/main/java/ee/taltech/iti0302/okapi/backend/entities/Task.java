@@ -1,10 +1,7 @@
 package ee.taltech.iti0302.okapi.backend.entities;
 
-import ee.taltech.iti0302.okapi.backend.components.TaskStatus;
 import jakarta.persistence.*;
 import lombok.*;
-
-import static jakarta.persistence.EnumType.STRING;
 
 @Getter
 @NoArgsConstructor
@@ -26,9 +23,8 @@ public class Task {
 
     @Setter
     @NonNull
-    @Enumerated(STRING)
     @Column(nullable = false)
-    private TaskStatus status;
+    private String status;
 
     @Setter
     @NonNull

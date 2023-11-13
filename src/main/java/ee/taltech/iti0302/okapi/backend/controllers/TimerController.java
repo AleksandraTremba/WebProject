@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/timer")
+@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class TimerController {
     @NonNull
     private final TimerService timerService;
