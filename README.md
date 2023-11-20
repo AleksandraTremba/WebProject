@@ -13,7 +13,7 @@ In order to get backend up and running, the system must have the following depen
 Note: Internet connectivity is required to download dependencies. Without it
 the source will not compile.
 
-From the root of the source, run:
+From the root of the source, run
 
 `./mvnw clean install spring-boot:repackage`
 
