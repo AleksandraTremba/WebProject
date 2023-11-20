@@ -24,9 +24,9 @@ public class GroupController {
         return groupService.getAllGroups();
     }
 
-    @GetMapping("/{id}")
-    public GroupDTO getGroupById(@PathVariable long id) {
-        return groupService.getGroupById(id);
+    @GetMapping("/{groupId}")
+    public GroupDTO getGroupById(@PathVariable long groupId) {
+        return groupService.getGroupById(groupId);
     }
 
     @PutMapping("/create")
@@ -34,18 +34,18 @@ public class GroupController {
         return groupService.createGroup(groupDTO);
     }
 
-    @PostMapping("/{groupId}/addUser")
-    public GroupDTO addUserToGroup(@PathVariable long groupId, @RequestBody CustomerDTO customerDTO) {
+    @PostMapping("/{groupId}/add")
+    public GroupDTO addCustomerToGroup(@PathVariable long groupId, @RequestBody CustomerDTO customerDTO) {
         return groupService.addUserToGroup(customerDTO, groupId);
     }
 
-    @DeleteMapping("/{groupId}/deleteUser")
-    public GroupDTO removeUserFromGroup(@PathVariable long groupId, @RequestBody CustomerDTO customerDTO) {
+    @DeleteMapping("/{groupId}/remove")
+    public GroupDTO removeCustomerFromGroup(@PathVariable long groupId, @RequestBody CustomerDTO customerDTO) {
         return groupService.addUserToGroup(customerDTO, groupId);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteGroup(@PathVariable long id) {
-        groupService.deleteGroup(id);
+    @DeleteMapping("/{groupId}")
+    public void deleteGroup(@PathVariable long groupId) {
+        groupService.deleteGroup(groupId);
     }
 }

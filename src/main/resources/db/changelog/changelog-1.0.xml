@@ -76,4 +76,29 @@
         />
     </changeSet>
 
+    <changeSet author="Sten Smirnov" id="6">
+        <createTable tableName="groups">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="group_name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="customer_id" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Sten Smirnov" id="7">
+        <addForeignKeyConstraint baseTableName="groups"
+                                 baseColumnNames="customer_id"
+                                 constraintName="FK_groups_customers"
+                                 referencedTableName="customers"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+        />
+    </changeSet>
+
 </databaseChangeLog>

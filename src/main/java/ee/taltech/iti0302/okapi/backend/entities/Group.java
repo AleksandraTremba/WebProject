@@ -8,7 +8,6 @@ import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Entity
 @Table(name = "groups")
 public class Group {
