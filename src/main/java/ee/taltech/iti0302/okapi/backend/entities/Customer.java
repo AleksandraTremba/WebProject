@@ -1,11 +1,6 @@
 package ee.taltech.iti0302.okapi.backend.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -32,5 +27,7 @@ public class Customer {
     private Long timerId;
 
     @Setter
-    private Long groupId;
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 }

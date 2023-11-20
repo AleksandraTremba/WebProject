@@ -1,6 +1,7 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
 
+import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.GroupDTO;
 import ee.taltech.iti0302.okapi.backend.services.GroupService;
 import lombok.NonNull;
@@ -31,6 +32,16 @@ public class GroupController {
     @PutMapping("/create")
     public GroupDTO createGroup(@RequestBody GroupDTO groupDTO) {
         return groupService.createGroup(groupDTO);
+    }
+
+    @PostMapping("/{groupId}/addUser")
+    public GroupDTO addUserToGroup(@PathVariable long groupId, @RequestBody CustomerDTO customerDTO) {
+        return groupService.addUserToGroup(customerDTO, groupId);
+    }
+
+    @DeleteMapping("/{groupId}/deleteUser")
+    public GroupDTO removeUserFromGroup(@PathVariable long groupId, @RequestBody CustomerDTO customerDTO) {
+        return groupService.addUserToGroup(customerDTO, groupId);
     }
 
     @DeleteMapping("/{id}")
