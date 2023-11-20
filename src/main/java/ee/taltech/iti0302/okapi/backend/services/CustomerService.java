@@ -15,7 +15,6 @@ import java.util.Optional;
 @Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
-
     private boolean customerExists(String username) {
         return customerRepository.existsByUsername(username);
     }
@@ -29,7 +28,7 @@ public class CustomerService {
     }
 
     private boolean validPassword(CustomerDTO customer) {
-        Optional<Customer> customerOptional = customerRepository.findById(customer.getId());
+        Optional<Customer> customerOptional = customerRepository.findByUsername(customer.getUsername());
         return customerOptional.map(value -> value.getPassword().equals(customer.getPassword())).orElse(false);
     }
 
@@ -48,7 +47,7 @@ public class CustomerService {
     }
 
     public CustomerDTO register(CustomerDTO customer) {
-        if (!customerExists(customer.getUsername())) {
+        if (!customer.getUsername().isEmpty() && !customerExists(customer.getUsername())) {
             customerRepository.save(CustomerMapper.INSTANCE.toEntity(customer));
             return customer;
         }

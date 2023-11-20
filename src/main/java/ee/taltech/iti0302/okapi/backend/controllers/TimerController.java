@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/timer")
-@CrossOrigin(origins = "http://127.0.0.1:5173")
+@RequestMapping("api/timers")
 public class TimerController {
     @NonNull
     private final TimerService timerService;
