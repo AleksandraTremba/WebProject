@@ -1,10 +1,7 @@
 package ee.taltech.iti0302.okapi.backend.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor
@@ -19,4 +16,9 @@ public class Group {
     @Setter
     @Column(nullable = false, unique = true)
     private String name;
+
+    @Setter
+    @NonNull
+    @Column(nullable = false)
+    private Long customerId;
 }

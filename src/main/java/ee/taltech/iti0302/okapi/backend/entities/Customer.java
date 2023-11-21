@@ -1,5 +1,6 @@
 package ee.taltech.iti0302.okapi.backend.entities;
 
+import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,4 +31,8 @@ public class Customer {
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
+
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private GroupRoles.GroupRole groupRole;
 }

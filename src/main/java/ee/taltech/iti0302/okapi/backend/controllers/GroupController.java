@@ -30,8 +30,8 @@ public class GroupController {
     }
 
     @PutMapping("/create")
-    public GroupDTO createGroup(@RequestBody GroupDTO groupDTO) {
-        return groupService.createGroup(groupDTO);
+    public GroupDTO createGroup(@RequestParam Long customerId) {
+        return groupService.createGroup(customerId);
     }
 
     @PostMapping("/{groupId}/add")
