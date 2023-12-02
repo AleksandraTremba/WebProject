@@ -26,12 +26,12 @@ public class GroupController {
 
     @GetMapping("/{groupId}")
     public GroupDTO getGroupById(@PathVariable long groupId) {
-        return groupService.getGroupById(groupId);
+        return groupService.searchGroupById(groupId);
     }
 
-    @PutMapping("/create")
-    public GroupDTO createGroup(@RequestParam Long customerId) {
-        return groupService.createGroup(customerId);
+    @PostMapping("/create")
+    public GroupDTO createGroup(@RequestBody GroupDTO groupDTO) {
+        return groupService.createGroup(groupDTO);
     }
 
     @PostMapping("/{groupId}/add")
@@ -41,7 +41,7 @@ public class GroupController {
 
     @DeleteMapping("/{groupId}/remove")
     public GroupDTO removeCustomerFromGroup(@PathVariable long groupId, @RequestBody CustomerDTO customerDTO) {
-        return groupService.addUserToGroup(customerDTO, groupId);
+        return groupService.removeUserFromGroup(customerDTO, groupId);
     }
 
     @DeleteMapping("/{groupId}")

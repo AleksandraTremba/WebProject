@@ -22,23 +22,26 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class GroupService {
-    @NonNull
-    private GroupRepository groupRepository;
 
-    @NonNull
-    private CustomerRepository customerRepository;
+    private final GroupRepository groupRepository;
+    private final CustomerRepository customerRepository;
+    // TODO: 27.11.2023
+    private final GroupMapper groupMapper;
 
-    public GroupDTO createGroup(Long customerId) {
-        GroupDTO groupDTO = new GroupDTO();
-        groupDTO.setCustomerId(customerId);
-        Group group = groupRepository.save(GroupMapper.INSTANCE.toEntity(groupDTO));
-        groupDTO.setId(group.getId());
+    public GroupDTO createGroup(GroupDTO groupDTO) {
+        Group group = GroupMapper.INSTANCE.toEntity(groupDTO);
+        // TODO: 27.11.2023 replace getADmin.getId with token
+        Customer customer = customerRepository.findById(groupDTO.getAdmin().getId()).orElseThrow();
+        group.setAdmin(customer);
+        groupRepository.save(group);
 
-        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
-        Customer customer = optionalCustomer.get();
+        customer.setGroup(group);
         customer.setGroupRole(GroupRoles.GroupRole.ADMIN);
 
-        return groupDTO;
+        customerRepository.save(customer);
+
+        // TODO: 27.11.2023  groupMapper.toDto
+        return GroupMapper.INSTANCE.toDTO(group);
 
 //        Group group = groupRepository.save(GroupMapper.INSTANCE.toEntity(dto));
 //        dto.setId(group.getId());
@@ -51,6 +54,10 @@ public class GroupService {
     public GroupDTO getGroupById(long groupId) {
         Optional<Group> group = groupRepository.findById(groupId);
         return group.map(GroupMapper.INSTANCE::toDTO).orElse(null);
+    }
+
+    public GroupDTO searchGroupById(long groupId) {
+        return getGroupById(groupId);
     }
 
     public List<GroupDTO> getAllGroups() {

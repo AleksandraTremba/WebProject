@@ -1,14 +1,19 @@
 package ee.taltech.iti0302.okapi.backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CustomerDTO {
-    @NonNull private Long id;
-    @NonNull private String username;
-    @NonNull private String password;
+    private Long id;
+
+    @NotBlank
+    private String username;
+    @NotBlank
+    private String password;
 
     private String newUsername;
     private String newPassword;

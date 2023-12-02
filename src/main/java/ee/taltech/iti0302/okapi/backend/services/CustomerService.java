@@ -47,10 +47,11 @@ public class CustomerService {
         return customerExists(customer.getUsername()) && validPassword(customer);
     }
 
-    public CustomerDTO register(CustomerDTO customer) {
-        if (!customerExists(customer.getUsername())) {
-            customerRepository.save(CustomerMapper.INSTANCE.toEntity(customer));
-            return customer;
+    public CustomerDTO register(CustomerDTO customerDTO) {
+        if (!customerExists(customerDTO.getUsername())) {
+            Customer customer = CustomerMapper.INSTANCE.toEntity(customerDTO);
+            customerRepository.save(customer);
+            return CustomerMapper.INSTANCE.toDTO(customer);
         }
         return null;
     }
