@@ -9,6 +9,6 @@ import lombok.*;
 public class GroupDTO {
     private Long id;
     private String name;
-    private CustomerDTO admin;
+    private Long adminId;
 }
 

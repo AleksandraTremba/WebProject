@@ -18,7 +18,6 @@ public class Group {
     private String name;
 
     @Setter
-    @ManyToOne
     @JoinColumn(nullable = false)
-    private Customer admin;
+    private Long adminId;
 }

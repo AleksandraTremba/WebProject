@@ -25,30 +25,23 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final CustomerRepository customerRepository;
-    // TODO: 27.11.2023
-    private final GroupMapper groupMapper;
 
     public GroupDTO createGroup(GroupDTO groupDTO) {
-        Group group = GroupMapper.INSTANCE.toEntity(groupDTO);
         // TODO: 27.11.2023 replace getADmin.getId with token
-        Customer customer = customerRepository.findById(groupDTO.getAdmin().getId()).orElseThrow();
-        group.setAdmin(customer);
-        groupRepository.save(group);
+        Optional<Customer> customer = customerRepository.findById(groupDTO.getAdminId());
+        if (customer.isPresent()) {
+            Group group = GroupMapper.INSTANCE.toEntity(groupDTO);
+            groupRepository.save(group);
 
-        customer.setGroup(group);
-        customer.setGroupRole(GroupRoles.GroupRole.ADMIN);
+            customer.get().setGroupId(group.getId());
+            customer.get().setGroupRole(GroupRoles.GroupRole.ADMIN);
 
-        customerRepository.save(customer);
+            customerRepository.save(customer.get());
 
-        // TODO: 27.11.2023  groupMapper.toDto
-        return GroupMapper.INSTANCE.toDTO(group);
+            return GroupMapper.INSTANCE.toDTO(group);
+        }
 
-//        Group group = groupRepository.save(GroupMapper.INSTANCE.toEntity(dto));
-//        dto.setId(group.getId());
-//        if (group.getId() != null) {
-//            return dto;
-//        }
-//        return null;
+        return null;
     }
 
     public GroupDTO getGroupById(long groupId) {
@@ -73,7 +66,7 @@ public class GroupService {
 
         if (optionalCustomer.isPresent() && group != null) {
             Customer customer = optionalCustomer.get();
-            customer.setGroup(group);
+            customer.setGroupId(group.getId());
             if (customer.getGroupRole() != GroupRoles.GroupRole.ADMIN) {
                 customer.setGroupRole(GroupRoles.GroupRole.USER);
             }
@@ -88,7 +81,7 @@ public class GroupService {
         Group group = groupRepository.findById(groupId).orElse(null);
         if (optionalCustomer.isPresent() && group != null) {
             Customer customer = optionalCustomer.get();
-            customer.setGroup(null);
+            customer.setGroupId(null);
             if (customer.getGroupRole() == GroupRoles.GroupRole.USER) {
                 customer.setGroupRole(null);
             } else {

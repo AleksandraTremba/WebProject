@@ -28,9 +28,8 @@ public class Customer {
     private Long timerId;
 
     @Setter
-    @ManyToOne
     @JoinColumn(name = "group_id")
-    private Group group;
+    private Long groupId;
 
     @Setter
     @Enumerated(EnumType.STRING)

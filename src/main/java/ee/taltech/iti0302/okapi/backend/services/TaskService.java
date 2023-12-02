@@ -14,8 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class TaskService {
-    @NonNull
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     public List<TaskDTO> getAllTasks() {
         List<Task> task = taskRepository.findAll();
