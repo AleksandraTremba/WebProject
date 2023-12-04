@@ -94,7 +94,14 @@ public class GroupService {
     }
 
     public void deleteGroup(long groupId) {
+        List<Customer> groupUsers = customerRepository.findByGroupId(groupId);
+        for (Customer customer : groupUsers) {
+            customer.setGroupId(null);
+            customer.setGroupRole(null);
+            customerRepository.save(customer);
+        }
         groupRepository.deleteById(groupId);
+
     }
 }
 
