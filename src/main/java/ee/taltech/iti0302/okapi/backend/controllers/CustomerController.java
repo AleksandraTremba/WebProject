@@ -1,7 +1,9 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
+import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
@@ -10,9 +12,10 @@ import ee.taltech.iti0302.okapi.backend.services.CustomerService;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/users")
+@CrossOrigin(origins = "http://127.0.0.1:5173")
+@Validated
 public class CustomerController {
-    @NonNull
-    private CustomerService customerService;
+    private final CustomerService customerService;
 
     @GetMapping("{username}")
     public CustomerDTO getData(@PathVariable String username) {
@@ -25,7 +28,7 @@ public class CustomerController {
     }
 
     @PutMapping("register")
-    public CustomerDTO registerCustomer(@RequestBody CustomerDTO customer) {
+    public CustomerDTO registerCustomer(@RequestBody @Valid CustomerDTO customer) {
         return customerService.register(customer);
     }
 
