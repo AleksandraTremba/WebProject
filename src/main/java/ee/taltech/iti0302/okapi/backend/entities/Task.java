@@ -1,5 +1,6 @@
 package ee.taltech.iti0302.okapi.backend.entities;
 
+import ee.taltech.iti0302.okapi.backend.enums.TaskStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,19 +16,16 @@ public class Task {
 
     @Setter
     @NonNull
-    @Column(nullable = false)
     private String title;
 
     @Setter
     private String description;
 
     @Setter
-    @NonNull
-    @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
 
     @Setter
     @NonNull
-    @Column(nullable = false)
     private Long customerId;
 }

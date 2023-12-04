@@ -12,6 +12,7 @@ public class CustomerDTO {
 
     @NotBlank
     private String username;
+    @NotBlank
     private String password;
 
     private String newUsername;

@@ -24,7 +24,6 @@
     </changeSet>
 
     <changeSet author="Sten Smirnov" id="2">
-        <sql>create type task_status as enum('TODO', 'WORKING', 'DONE');</sql>
         <createTable tableName="tasks">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" unique="true"/>
@@ -36,7 +35,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="description" type="VARCHAR(255)" />
-            <column name="status" type="task_status" />
+            <column name="status" type="varchar(255)" />
         </createTable>
     </changeSet>
 
