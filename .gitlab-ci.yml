@@ -14,7 +14,7 @@ build-job:
 deploy-job:
   stage: deploy
   only:
-    - dev
+    - main
   script:
     - cd /opt/project-okapi/
     - docker compose down

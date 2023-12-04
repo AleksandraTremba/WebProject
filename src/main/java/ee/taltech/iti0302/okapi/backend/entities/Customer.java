@@ -33,5 +33,5 @@ public class Customer {
 
     @Setter
     @Enumerated(EnumType.STRING)
-    private GroupRoles.GroupRole groupRole;
+    private GroupRoles groupRole;
 }

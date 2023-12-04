@@ -34,7 +34,7 @@ public class GroupService {
             groupRepository.save(group);
 
             customer.get().setGroupId(group.getId());
-            customer.get().setGroupRole(GroupRoles.GroupRole.ADMIN);
+            customer.get().setGroupRole(GroupRoles.ADMIN);
 
             customerRepository.save(customer.get());
 
@@ -67,8 +67,8 @@ public class GroupService {
         if (optionalCustomer.isPresent() && group != null) {
             Customer customer = optionalCustomer.get();
             customer.setGroupId(group.getId());
-            if (customer.getGroupRole() != GroupRoles.GroupRole.ADMIN) {
-                customer.setGroupRole(GroupRoles.GroupRole.USER);
+            if (customer.getGroupRole() != GroupRoles.ADMIN) {
+                customer.setGroupRole(GroupRoles.USER);
             }
             customerRepository.save(customer);
             return GroupMapper.INSTANCE.toDTO(group);
@@ -82,7 +82,7 @@ public class GroupService {
         if (optionalCustomer.isPresent() && group != null) {
             Customer customer = optionalCustomer.get();
             customer.setGroupId(null);
-            if (customer.getGroupRole() == GroupRoles.GroupRole.USER) {
+            if (customer.getGroupRole() == GroupRoles.USER) {
                 customer.setGroupRole(null);
             } else {
                 deleteGroup(groupId);
