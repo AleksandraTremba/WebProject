@@ -2,7 +2,9 @@ package ee.taltech.iti0302.okapi.backend.services;
 
 import ee.taltech.iti0302.okapi.backend.components.TimerMapper;
 import ee.taltech.iti0302.okapi.backend.dto.TimerDTO;
+import ee.taltech.iti0302.okapi.backend.entities.Records;
 import ee.taltech.iti0302.okapi.backend.entities.Timer;
+import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import ee.taltech.iti0302.okapi.backend.repository.TimerRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class TimerService {
     @NonNull
     private TimerRepository timerRepository;
+    private final RecordsRepository recordsRepository;
 
     public TimerDTO getTimerById(Long id) {
         return TimerMapper.INSTANCE.toDTO(timerRepository.findById(id).orElse(null));
@@ -36,6 +39,7 @@ public class TimerService {
             }
             timer.setRemainingTime(0);
             timerRepository.save(timer);
+            updateRecords();
             return TimerMapper.INSTANCE.toDTO(timer);
         }
         return null;
@@ -66,5 +70,16 @@ public class TimerService {
         Timer timer = timerRepository.save(TimerMapper.INSTANCE.toEntity(timerDTO));
         timerDTO.setId(timer.getId());
         return timerDTO;
+    }
+
+    private void updateRecords() {
+        Records records = recordsRepository.findById(1L).orElseGet(() -> {
+            Records newRecords = new Records();
+            recordsRepository.save(newRecords);
+            return newRecords;
+        });
+
+        records.setNumberOfTimers(records.getNumberOfTimers() + 1);
+        recordsRepository.save(records);
     }
 }

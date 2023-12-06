@@ -2,7 +2,9 @@ package ee.taltech.iti0302.okapi.backend.services;
 
 import ee.taltech.iti0302.okapi.backend.components.TaskMapper;
 import ee.taltech.iti0302.okapi.backend.dto.TaskDTO;
+import ee.taltech.iti0302.okapi.backend.entities.Records;
 import ee.taltech.iti0302.okapi.backend.entities.Task;
+import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import ee.taltech.iti0302.okapi.backend.repository.TaskRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.Optional;
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
+    private final RecordsRepository recordsRepository;
 
     public List<TaskDTO> getAllTasks() {
         List<Task> task = taskRepository.findAll();
@@ -31,6 +34,7 @@ public class TaskService {
     public TaskDTO createTask(TaskDTO dto) {
         Task task = taskRepository.save(TaskMapper.INSTANCE.toEntity(dto));
         dto.setId(task.getId());
+        updateRecords();
         if (task.getId() != null) {
             return dto;
         }
@@ -52,5 +56,16 @@ public class TaskService {
 
     public void deleteTask(long id) {
         taskRepository.deleteById(id);
+    }
+
+    private void updateRecords() {
+        Records records = recordsRepository.findById(1L).orElseGet(() -> {
+            Records newRecords = new Records();
+            recordsRepository.save(newRecords);
+            return newRecords;
+        });
+
+        records.setNumberOfTasks(records.getNumberOfTasks() + 1);
+        recordsRepository.save(records);
     }
 }

@@ -3,6 +3,8 @@ package ee.taltech.iti0302.okapi.backend.services;
 import ee.taltech.iti0302.okapi.backend.components.CustomerMapper;
 import ee.taltech.iti0302.okapi.backend.components.CustomerServiceUpdate;
 import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
+import ee.taltech.iti0302.okapi.backend.entities.Records;
+import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.util.Optional;
 @Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
+    private final RecordsRepository recordsRepository;
+
     private boolean customerExists(String username) {
         return customerRepository.existsByUsername(username);
     }
@@ -50,6 +54,7 @@ public class CustomerService {
         if (!customerExists(customerDTO.getUsername())) {
             Customer customer = CustomerMapper.INSTANCE.toEntity(customerDTO);
             customerRepository.save(customer);
+            updateRecords();
             return CustomerMapper.INSTANCE.toDTO(customer);
         }
         return null;
@@ -105,5 +110,16 @@ public class CustomerService {
         }
 
         return null;
+    }
+
+    private void updateRecords() {
+        Records records = recordsRepository.findById(1L).orElseGet(() -> {
+            Records newRecords = new Records();
+            recordsRepository.save(newRecords);
+            return newRecords;
+        });
+
+        records.setNumberOfUsers(records.getNumberOfUsers() + 1);
+        recordsRepository.save(records);
     }
 }
