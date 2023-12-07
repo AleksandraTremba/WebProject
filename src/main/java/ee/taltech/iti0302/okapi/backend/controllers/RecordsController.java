@@ -1,8 +1,6 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
-import ee.taltech.iti0302.okapi.backend.dto.RecordsDTO;
 import ee.taltech.iti0302.okapi.backend.services.RecordsService;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/records")
 @CrossOrigin(origins = "http://127.0.0.1:5173")
-@Validated
 public class RecordsController {
 
     @NonNull

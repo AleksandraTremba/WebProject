@@ -101,6 +101,7 @@
     </changeSet>
 
     <changeSet author="Aleksandra Tremba" id="8">
+        <validCheckSum>9:32459c0cbe6138bbfb7c00c67977da5d</validCheckSum>
         <createTable tableName="records">
             <column name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" unique="true"/>
