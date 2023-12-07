@@ -105,10 +105,6 @@
             <column name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" unique="true"/>
             </column>
-            <column name="users_number" type="VARCHAR(255)" />
-            <column name="timer_number" type="VARCHAR(255)" />
-            <column name="group_number" type="VARCHAR(255)" />
-            <column name="tasks_number" type="VARCHAR(255)" />
         </createTable>
     </changeSet>
 
