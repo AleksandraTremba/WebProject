@@ -5,7 +5,9 @@ import ee.taltech.iti0302.okapi.backend.components.CustomerServiceUpdate;
 import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Records;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
+import ee.taltech.iti0302.okapi.backend.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ee.taltech.iti0302.okapi.backend.entities.Customer;
@@ -18,6 +20,8 @@ import java.util.Optional;
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final RecordsRepository recordsRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider tokenProvider;
 
     private boolean customerExists(String username) {
         return customerRepository.existsByUsername(username);
@@ -31,11 +35,6 @@ public class CustomerService {
         dto.setPassword("");
     }
 
-    private boolean validPassword(CustomerDTO customer) {
-        Optional<Customer> customerOptional = customerRepository.findByUsername(customer.getUsername());
-        return customerOptional.map(value -> value.getPassword().equals(customer.getPassword())).orElse(false);
-    }
-
     public CustomerDTO getCustomerData(String username) {
         Optional<Customer> dataShell = customerRepository.findByUsername(username);
         if (dataShell.isPresent()) {
@@ -46,25 +45,34 @@ public class CustomerService {
         return null;
     }
 
-    public boolean login(CustomerDTO customer) {
-        return customerExists(customer.getUsername()) && validPassword(customer);
+    public String login(CustomerDTO request) {
+        Optional<Customer> opCustomer = customerRepository.findById(request.getId());
+        if (opCustomer.isEmpty())
+            return null;
+
+        Customer customer = opCustomer.get();
+        if (passwordEncoder.matches(request.getPassword(), customer.getPassword()))
+            return tokenProvider.generateToken(request.getUsername());
+
+        return null;
     }
     
     public CustomerDTO register(CustomerDTO customerDTO) {
-        if (!customerExists(customerDTO.getUsername())) {
-            Customer customer = CustomerMapper.INSTANCE.toEntity(customerDTO);
-            customerRepository.save(customer);
-            updateRecords();
-            return CustomerMapper.INSTANCE.toDTO(customer);
-        }
-        return null;
+        if (customerExists(customerDTO.getUsername()))
+            return null;
+
+        Customer customer = CustomerMapper.INSTANCE.toEntity(customerDTO);
+        customer.setPassword(passwordEncoder.encode(customerDTO.getPassword()));
+        customerRepository.save(customer);
+        updateRecords();
+        return customerDTO;
     }
 
     public CustomerDTO update(CustomerDTO customer, CustomerServiceUpdate updateType) {
         Optional<Customer> customerOptional = customerRepository.findById(customer.getId());
         if (customerOptional.isPresent()) {
             Customer dataShell = customerOptional.get();
-            if (validPassword(dataShell, customer.getPassword())) {
+            if (passwordEncoder.matches(customer.getPassword(), dataShell.getPassword())) {
                 if (updateType.equals(CustomerServiceUpdate.CHANGE_USERNAME)) {
                     dataShell.setUsername(customer.getNewUsername());
                     customer.setUsername(customer.getNewUsername());
