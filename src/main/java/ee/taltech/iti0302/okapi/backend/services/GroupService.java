@@ -7,10 +7,12 @@ import ee.taltech.iti0302.okapi.backend.dto.GroupDTO;
 import ee.taltech.iti0302.okapi.backend.dto.TimerDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.entities.Group;
+import ee.taltech.iti0302.okapi.backend.entities.Records;
 import ee.taltech.iti0302.okapi.backend.entities.Timer;
 import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
 import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 import ee.taltech.iti0302.okapi.backend.repository.GroupRepository;
+import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final CustomerRepository customerRepository;
+    private final RecordsRepository recordsRepository;
 
     public GroupDTO createGroup(GroupDTO groupDTO) {
         // TODO: 27.11.2023 replace getADmin.getId with token
@@ -37,6 +40,7 @@ public class GroupService {
             customer.get().setGroupRole(GroupRoles.ADMIN);
 
             customerRepository.save(customer.get());
+            updateRecords();
 
             return GroupMapper.INSTANCE.toDTO(group);
         }
@@ -102,6 +106,17 @@ public class GroupService {
         }
         groupRepository.deleteById(groupId);
 
+    }
+
+    private void updateRecords() {
+        Records records = recordsRepository.findById(1L).orElseGet(() -> {
+            Records newRecords = new Records();
+            recordsRepository.save(newRecords);
+            return newRecords;
+        });
+
+        records.setNumberOfGroups(records.getNumberOfGroups() + 1);
+        recordsRepository.save(records);
     }
 }
 
