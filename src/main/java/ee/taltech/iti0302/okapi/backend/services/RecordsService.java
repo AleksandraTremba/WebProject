@@ -26,46 +26,30 @@ public class RecordsService {
     }
 
     public String getUsersNumber() {
-        if (recordsRepository.findById(1L).isPresent()) {
-            Optional<Records> optionalRecords = recordsRepository.findById(1L);
-            Records records = optionalRecords.get();
-            return String.valueOf(records.getNumberOfUsers());
-        } else {
-            Records records = new Records();
-            return String.valueOf(records.getNumberOfUsers());
-        }
+        Optional<Records> optionalRecords = recordsRepository.findById(1L);
+        Records records;
+        records = optionalRecords.orElseGet(Records::new);
+        return records.getNumberOfUsers().toString();
     }
 
     public String getTimersNumber() {
-        if (recordsRepository.findById(1L).isPresent()) {
-            Optional<Records> optionalRecords = recordsRepository.findById(1L);
-            Records records = optionalRecords.get();
-            return String.valueOf(records.getNumberOfTimers());
-        } else {
-            Records records = new Records();
-            return String.valueOf(records.getNumberOfTimers());
-        }
+        Optional<Records> optionalRecords = recordsRepository.findById(1L);
+        Records records;
+        records = optionalRecords.orElseGet(Records::new);
+        return records.getNumberOfTimers().toString();
     }
 
     public String getGroupsNumber() {
-        if (recordsRepository.findById(1L).isPresent()) {
-            Optional<Records> optionalRecords = recordsRepository.findById(1L);
-            Records records = optionalRecords.get();
-            return String.valueOf(records.getNumberOfGroups());
-        } else {
-            Records records = new Records();
-            return String.valueOf(records.getNumberOfGroups());
-        }
+        Optional<Records> optionalRecords = recordsRepository.findById(1L);
+        Records records;
+        records = optionalRecords.orElseGet(Records::new);
+        return records.getNumberOfGroups().toString();
     }
 
     public String getTasksNumber() {
-        if (recordsRepository.findById(1L).isPresent()) {
-            Optional<Records> optionalRecords = recordsRepository.findById(1L);
-            Records records = optionalRecords.get();
-            return String.valueOf(records.getNumberOfTasks());
-        } else {
-            Records records = new Records();
-            return String.valueOf(records.getNumberOfTasks());
-        }
+        Optional<Records> optionalRecords = recordsRepository.findById(1L);
+        Records records;
+        records = optionalRecords.orElseGet(Records::new);
+        return records.getNumberOfTasks().toString();
     }
 }
