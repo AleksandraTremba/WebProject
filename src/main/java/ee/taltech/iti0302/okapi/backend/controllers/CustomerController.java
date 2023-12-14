@@ -1,12 +1,13 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
+import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerChangeDataDTO;
+import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerInitDTO;
 import jakarta.validation.Valid;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
+import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.services.CustomerService;
 
 @RequiredArgsConstructor
@@ -23,27 +24,27 @@ public class CustomerController {
     }
 
     @PostMapping("public/customers/login")
-    public String login(@RequestBody CustomerDTO customer) {
-        return customerService.login(customer);
+    public CustomerDTO login(@RequestBody CustomerInitDTO request) {
+        return customerService.login(request);
     }
 
     @PutMapping("public/customers/register")
-    public CustomerDTO registerCustomer(@RequestBody @Valid CustomerDTO customer) {
-        return customerService.register(customer);
+    public CustomerInitDTO registerCustomer(@RequestBody @Valid CustomerInitDTO request) {
+        return customerService.register(request);
     }
 
     @PostMapping("customers/update/username")
-    public CustomerDTO updateCustomerUsername(@RequestBody CustomerDTO customer) {
-        return customerService.updateUsername(customer);
+    public CustomerChangeDataDTO updateCustomerUsername(@RequestBody @Valid CustomerChangeDataDTO request) {
+        return customerService.updateUsername(request);
     }
 
     @PostMapping("customers/update/password")
-    public CustomerDTO updateCustomerPassword(@RequestBody CustomerDTO customer) {
-        return customerService.updatePassword(customer);
+    public CustomerChangeDataDTO updateCustomerPassword(@RequestBody CustomerChangeDataDTO request) {
+        return customerService.updatePassword(request);
     }
 
     @DeleteMapping("customers/delete")
-    public CustomerDTO deleteCustomer(@RequestBody CustomerDTO customer) {
-        return customerService.delete(customer);
+    public boolean deleteCustomer(@RequestBody CustomerInitDTO request) {
+        return customerService.delete(request);
     }
 }

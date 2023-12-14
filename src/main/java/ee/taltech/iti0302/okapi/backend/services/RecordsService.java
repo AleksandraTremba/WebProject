@@ -1,14 +1,9 @@
 package ee.taltech.iti0302.okapi.backend.services;
 
-import ee.taltech.iti0302.okapi.backend.components.GroupMapper;
 import ee.taltech.iti0302.okapi.backend.components.RecordsMapper;
-import ee.taltech.iti0302.okapi.backend.dto.RecordsDTO;
-import ee.taltech.iti0302.okapi.backend.entities.Group;
+import ee.taltech.iti0302.okapi.backend.dto.records.RecordsDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Records;
-import ee.taltech.iti0302.okapi.backend.entities.Task;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
-import ee.taltech.iti0302.okapi.backend.repository.TimerRepository;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

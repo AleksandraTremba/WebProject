@@ -3,7 +3,7 @@ package ee.taltech.iti0302.okapi.backend.components;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-import ee.taltech.iti0302.okapi.backend.dto.TaskDTO;
+import ee.taltech.iti0302.okapi.backend.dto.task.TaskDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Task;
 
 @Mapper(componentModel = "spring")
