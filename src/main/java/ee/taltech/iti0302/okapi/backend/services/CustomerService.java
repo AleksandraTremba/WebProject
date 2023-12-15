@@ -11,7 +11,7 @@ import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import ee.taltech.iti0302.okapi.backend.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +21,7 @@ import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CustomerService {
@@ -36,9 +37,11 @@ public class CustomerService {
     public Optional<Customer> findById(Long id) {
         return customerRepository.findById(id);
     }
+
     public Optional<Customer> findByUsername(String username) {
         return customerRepository.findByUsername(username);
     }
+
     public List<Customer> findByGroupId(Long id) {
         return customerRepository.findByGroupId(id);
     }
@@ -54,6 +57,7 @@ public class CustomerService {
             customer.setGroupId(groupId);
             customer.setGroupRole(role);
             customerRepository.save(customer);
+            log.info("Updated customer group data. Customer ID: {}, Group ID: {}, Role: {}", id, groupId, role);
         }
     }
 
@@ -64,6 +68,7 @@ public class CustomerService {
             customer.setGroupRole(null);
 
             customerRepository.save(customer);
+            log.info("Removed customer group data. Customer ID: {}", id);
         }
     }
 
@@ -72,37 +77,50 @@ public class CustomerService {
         customer.setGroupRole(null);
 
         customerRepository.save(customer);
+        log.info("Removed customer group data. Customer ID: {}", customer.getId());
     }
 
     public boolean customerIsGroupAdmin(Long id) {
         Customer customer = customerRepository.findById(id).orElse(null);
-        if (customer != null)
-            return customer.getGroupRole().equals(GroupRoles.ADMIN);
+        if (customer != null) {
+            boolean isGroupAdmin = customer.getGroupRole().equals(GroupRoles.ADMIN);
+            log.debug("Customer with ID {} is a group admin: {}", id, isGroupAdmin);
+            return isGroupAdmin;
+        }
         return false;
     }
 
     public CustomerDTO getCustomerData(String username) {
         Optional<Customer> dataShell = customerRepository.findByUsername(username);
-        return dataShell.map(CustomerMapper.INSTANCE::toDTO).orElse(null);
+        CustomerDTO customerDTO = dataShell.map(CustomerMapper.INSTANCE::toDTO).orElse(null);
+        log.debug("Retrieved customer data for username: {}", username);
+        return customerDTO;
     }
 
     public CustomerDTO login(CustomerInitDTO request) {
         Customer customer = customerRepository.findByUsername(request.getUsername()).orElse(null);
-        if (customer == null)
+        if (customer == null) {
+            log.info("Login failed. Customer not found with username: {}", request.getUsername());
             return null;
+        }
 
-        if (!passwordEncoder.matches(request.getPassword(), customer.getPassword()))
+        if (!passwordEncoder.matches(request.getPassword(), customer.getPassword())) {
+            log.info("Login failed. Incorrect password for customer with username: {}", request.getUsername());
             return null;
+        }
 
         String token = tokenProvider.generateToken(request.getUsername());
         CustomerDTO dto = CustomerMapper.INSTANCE.toDTO(customer);
         dto.setToken(token);
+        log.info("Customer logged in successfully. Username: {}", request.getUsername());
         return dto;
     }
-    
+
     public CustomerInitDTO register(CustomerInitDTO request) {
-        if (customerExists(request.getUsername()))
+        if (customerExists(request.getUsername())) {
+            log.info("Registration failed. Customer with username {} already exists.", request.getUsername());
             return null;
+        }
 
         Customer customer = CustomerMapper.INSTANCE.toEntity(request);
         customer.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -111,18 +129,25 @@ public class CustomerService {
         customer.setTimerId(timerService.createTimer(customer.getId()));
         customerRepository.save(customer);
 
+        log.info("Customer registered successfully. Username: {}", request.getUsername());
         return request;
     }
 
     private CustomerChangeDataDTO update(CustomerChangeDataDTO request, CustomerServiceUpdate updateType) {
         Customer customer = customerRepository.findByUsername(request.getUsername()).orElse(null);
-        if (customer == null)
+        if (customer == null) {
+            log.info("Update failed. Customer not found with username: {}", request.getUsername());
             return null;
+        }
 
-        if (updateType.equals(CustomerServiceUpdate.CHANGE_USERNAME))
+        if (updateType.equals(CustomerServiceUpdate.CHANGE_USERNAME)) {
             customer.setUsername(request.getNewData());
-        if (updateType.equals(CustomerServiceUpdate.CHANGE_PASSWORD))
+            log.info("Updated customer username. New username: {}", request.getNewData());
+        }
+        if (updateType.equals(CustomerServiceUpdate.CHANGE_PASSWORD)) {
             customer.setPassword(request.getNewData());
+            log.info("Updated customer password. Customer ID: {}", customer.getId());
+        }
 
         customerRepository.save(customer);
         return request;
@@ -131,6 +156,7 @@ public class CustomerService {
     public CustomerChangeDataDTO updateUsername(CustomerChangeDataDTO request) {
         // Check whether the desired username is taken
         if (customerExists(request.getNewData())) {
+            log.info("Username update failed. Username {} is already taken.", request.getNewData());
             return null;
         }
 
@@ -146,9 +172,11 @@ public class CustomerService {
         if (customerOptional.isPresent()) {
             Customer customer = customerOptional.get();
             customerRepository.deleteById(customer.getId());
+            log.info("Customer deleted successfully. Username: {}", request.getUsername());
             return true;
         }
 
+        log.info("Deletion failed. Customer not found with username: {}", request.getUsername());
         return false;
     }
 }
