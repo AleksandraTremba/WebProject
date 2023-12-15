@@ -2,6 +2,7 @@ package ee.taltech.iti0302.okapi.backend.controllers;
 
 import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerChangeDataDTO;
 import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerInitDTO;
+import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -29,17 +30,17 @@ public class CustomerController {
     }
 
     @PutMapping("public/customers/register")
-    public CustomerInitDTO registerCustomer(@RequestBody @Valid CustomerInitDTO request) {
+    public CustomerDTO registerCustomer(@RequestBody @Valid CustomerInitDTO request) {
         return customerService.register(request);
     }
 
     @PostMapping("customers/update/username")
-    public CustomerChangeDataDTO updateCustomerUsername(@RequestBody @Valid CustomerChangeDataDTO request) {
+    public CustomerDTO updateCustomerUsername(@RequestBody @Valid CustomerChangeDataDTO request) {
         return customerService.updateUsername(request);
     }
 
     @PostMapping("customers/update/password")
-    public CustomerChangeDataDTO updateCustomerPassword(@RequestBody CustomerChangeDataDTO request) {
+    public CustomerDTO updateCustomerPassword(@RequestBody CustomerChangeDataDTO request) {
         return customerService.updatePassword(request);
     }
 

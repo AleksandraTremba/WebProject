@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Data
+@Builder
 public class TaskDTO {
     private Long id;
 

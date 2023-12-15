@@ -1,32 +1,31 @@
 package ee.taltech.iti0302.okapi.backend.services;
 
 import ee.taltech.iti0302.okapi.backend.components.TimerMapper;
+import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.timer.TimerDTO;
-import ee.taltech.iti0302.okapi.backend.entities.Records;
+import ee.taltech.iti0302.okapi.backend.dto.timer.TimerResetDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Timer;
-import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
+import ee.taltech.iti0302.okapi.backend.dto.timer.DummyTimer;
+import ee.taltech.iti0302.okapi.backend.exceptions.ApplicationRuntimeException;
 import ee.taltech.iti0302.okapi.backend.repository.TimerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class TimerService {
     private final TimerRepository timerRepository;
 
-    private TimerDTO createNullDTO() {
-        TimerDTO dto = new TimerDTO();
-        dto.setRunningTime(0);
-        dto.setRemainingTime(null);
-        dto.setEndTime(null);
-        dto.setStartTime(null);
-
-        return dto;
+    private DummyTimer createNullTimer() {
+        return DummyTimer.builder()
+                .startTime(null)
+                .endTime(null)
+                .remainingTime(null)
+                .runningTime(0)
+                .build();
     }
 
     public TimerDTO getTimerById(Long id) {
@@ -63,7 +62,7 @@ public class TimerService {
         dto.setEndTime(end);
         dto.setRemainingTime(remainingTime);
 
-        TimerMapper.INSTANCE.updateTimerFromDTO(dto, timer);
+        TimerMapper.INSTANCE.updateTimerFromExternalDataset(dto, timer);
         timerRepository.save(timer);
 
         return dto;
@@ -80,23 +79,29 @@ public class TimerService {
         TimerDTO dto = TimerMapper.INSTANCE.toDTO(timer);
         dto.setRemainingTime(remainingTime);
 
-        TimerMapper.INSTANCE.updateTimerFromDTO(dto, timer);
+        TimerMapper.INSTANCE.updateTimerFromExternalDataset(dto, timer);
         timerRepository.save(timer);
 
         return dto;
     }
 
-    public TimerDTO resetTimer(Long id) {
-        Timer timer = timerRepository.findById(id).orElse(null);
+    public TimerDTO resetTimer(TimerResetDTO request) {
+        Timer timer = timerRepository.findById(request.getId()).orElse(null);
+
         if (timer == null)
-            return null;
+            throw new ApplicationRuntimeException("Timer does not exists!");
 
-        TimerDTO dto = createNullDTO();
-        dto.setId(timer.getId());
+        if (!timer.getCustomerId().equals(request.getCustomerId()))
+            throw new ApplicationRuntimeException("You cannot change others' timers, stop it!");
 
-        TimerMapper.INSTANCE.updateTimerFromDTO(dto, timer);
+        DummyTimer dummy = createNullTimer();
+        TimerMapper.INSTANCE.updateTimerFromExternalDataset(dummy, timer);
         timerRepository.save(timer);
 
-        return dto;
+        return TimerMapper.INSTANCE.toDTO(timer);
+    }
+
+    public void deleteTimer(Long id) {
+        timerRepository.deleteById(id);
     }
 }

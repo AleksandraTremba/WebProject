@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Data
+@Builder
 public class CustomerDTO {
     private Long id;
 
