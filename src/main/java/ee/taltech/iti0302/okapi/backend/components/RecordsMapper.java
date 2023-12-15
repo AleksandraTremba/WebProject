@@ -1,6 +1,6 @@
 package ee.taltech.iti0302.okapi.backend.components;
 
-import ee.taltech.iti0302.okapi.backend.dto.RecordsDTO;
+import ee.taltech.iti0302.okapi.backend.dto.records.RecordsDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Records;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

@@ -16,20 +16,19 @@ public class Timer {
     private Long id;
 
     @Setter
-    @NonNull
-    @Column(nullable = false)
     private LocalDateTime startTime;
 
     @Setter
-    @NonNull
-    @Column(nullable = false)
     private LocalDateTime endTime;
 
     @Setter
-    private long remainingTime = 0;
+    private Integer runningTime = 0;
+
+    @Setter
+    private Long remainingTime = 0L;
 
     @Setter
     @NonNull
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long customerId;
 }
