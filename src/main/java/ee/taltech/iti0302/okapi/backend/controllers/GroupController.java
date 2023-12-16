@@ -1,9 +1,12 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
 
-import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
-import ee.taltech.iti0302.okapi.backend.dto.GroupDTO;
+import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
+import ee.taltech.iti0302.okapi.backend.dto.group.GroupDTO;
+import ee.taltech.iti0302.okapi.backend.enums.GroupCustomerActionType;
 import ee.taltech.iti0302.okapi.backend.services.GroupService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -29,19 +32,19 @@ public class GroupController {
         return groupService.searchGroupById(groupId);
     }
 
-    @PostMapping("/create")
-    public GroupDTO createGroup(@RequestBody GroupDTO groupDTO) {
-        return groupService.createGroup(groupDTO);
+    @PutMapping("/")
+    public GroupDTO createGroup(@RequestParam @NotBlank String groupName, @RequestBody @Valid CustomerDTO customerDTO) {
+        return groupService.manipulateCustomerAndGroup(customerDTO, groupName, GroupCustomerActionType.CREATE);
     }
 
-    @PostMapping("/{groupId}/add")
-    public GroupDTO addCustomerToGroup(@PathVariable long groupId, @RequestBody CustomerDTO customerDTO) {
-        return groupService.addUserToGroup(customerDTO, groupId);
+    @PostMapping("/{groupName}/add")
+    public GroupDTO addCustomerToGroup(@PathVariable @NotBlank String groupName, @RequestBody @Valid CustomerDTO customerDTO) {
+        return groupService.manipulateCustomerAndGroup(customerDTO, groupName, GroupCustomerActionType.ADD);
     }
 
-    @DeleteMapping("/{groupId}/remove")
-    public GroupDTO removeCustomerFromGroup(@PathVariable long groupId, @RequestBody CustomerDTO customerDTO) {
-        return groupService.removeUserFromGroup(customerDTO, groupId);
+    @DeleteMapping("/{groupName}/remove_customer")
+    public GroupDTO removeCustomerFromGroup(@PathVariable String groupName, @RequestBody CustomerDTO customerDTO) {
+        return groupService.manipulateCustomerAndGroup(customerDTO, groupName, GroupCustomerActionType.DELETE);
     }
 
     @DeleteMapping("/{groupId}")

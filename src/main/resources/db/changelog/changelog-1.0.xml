@@ -49,6 +49,7 @@
             </column>
             <column name="end_time" type="TIMESTAMP(6)" />
             <column name="remaining_time" type="BIGINT" />
+            <column name="running_time" type="INT" />
             <column name="start_time" type="TIMESTAMP(6)" />
         </createTable>
     </changeSet>
