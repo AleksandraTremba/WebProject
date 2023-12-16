@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,29 +27,33 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final CustomerService customerService;
 
+    private LocalDateTime getCurrentTime() {
+        return LocalDateTime.now();
+    }
+
     private GroupDTO getGroupById(long groupId) {
         Optional<Group> group = groupRepository.findById(groupId);
         return group.map(GroupMapper.INSTANCE::toDTO).orElse(null);
     }
 
     public GroupDTO searchGroupById(long groupId) {
-        log.debug("Searching for group with ID: {}", groupId);
+        log.info(getCurrentTime() + ": " + "Searching for group with ID: {}", groupId);
         return getGroupById(groupId);
     }
 
     public List<GroupDTO> getAllGroups() {
-        log.debug("Retrieving all groups");
+        log.debug(getCurrentTime() + ": " + "Retrieving all groups");
         List<Group> group = groupRepository.findAll();
         List<GroupDTO> groupDTOs = group.stream()
                 .map(GroupMapper.INSTANCE::toDTO)
                 .toList();
 
-        log.info("Retrieved {} groups.", groupDTOs.size());
+        log.info(getCurrentTime() + ": " + "Retrieved {} groups.", groupDTOs.size());
         return groupDTOs;
     }
 
     private GroupDTO createGroup(Long customerId, String groupName) {
-        log.info("Creating group: {} for customer with ID: {}", groupName, customerId);
+        log.debug(getCurrentTime() + ": " + "Creating group: {} for customer with ID: {}", groupName, customerId);
         GroupCreateDTO temporaryShell = new GroupCreateDTO(groupName, customerId);
         Group group = GroupMapper.INSTANCE.toEntity(temporaryShell);
 
@@ -56,32 +61,30 @@ public class GroupService {
 
         customerService.updateCustomerGroupData(customerId, group.getId(), GroupRoles.ADMIN);
 
-        log.info("Group created successfully. Group ID: {}", group.getId());
+        log.info(getCurrentTime() + ": " + "Group created successfully. Group ID: {}", group.getId());
         return GroupMapper.INSTANCE.toDTO(group);
     }
 
     private GroupDTO addCustomerToGroup(Long customerId, Group group) {
-        log.info("Adding customer with ID: {} to group with ID: {}", customerId, group.getId());
         customerService.updateCustomerGroupData(customerId, group.getId(), GroupRoles.USER);
-        log.info("Customer added to group successfully. Group ID: {}", group.getId());
+        log.info(getCurrentTime() + ": " + "Customer added to group successfully. Group ID: {}", group.getId());
         return GroupMapper.INSTANCE.toDTO(group);
     }
 
     private GroupDTO removeCustomerFromGroup(Long customerId, Group group) {
-        log.info("Removing customer with ID: {} from group with ID: {}", customerId, group.getId());
         if (customerService.customerIsGroupAdmin(customerId)) {
             deleteGroup(group.getId());
         } else {
             customerService.removeCustomerGroupData(customerId);
         }
-        log.info("Customer removed from group successfully. Group ID: {}", group.getId());
+        log.info(getCurrentTime() + ": " + "Customer removed from group successfully. Group ID: {}", group.getId());
         return GroupMapper.INSTANCE.toDTO(group);
     }
 
     public GroupDTO manipulateCustomerAndGroup(CustomerDTO dto, String groupName, GroupCustomerActionType action) {
         Long customerId = customerService.getCustomerIdByUsername(dto.getUsername());
         if (customerId == null) {
-            log.warn("Could not find customer with username: {}", dto.getUsername());
+            log.warn(getCurrentTime() + ": " + "Could not find customer with username: {}", dto.getUsername());
             return null;
         }
 
@@ -90,7 +93,7 @@ public class GroupService {
         } else {
             Group group = groupRepository.findByName(groupName).orElse(null);
             if (group == null) {
-                log.warn("Could not find group with name: {}", groupName);
+                log.warn(getCurrentTime() + ": " + "Could not find group with name: {}", groupName);
                 return null;
             }
 
@@ -106,12 +109,11 @@ public class GroupService {
     }
 
     public void deleteGroup(long groupId) {
-        log.info("Deleting group with ID: {}", groupId);
         List<Customer> groupUsers = customerService.findByGroupId(groupId);
         for (Customer customer : groupUsers) {
             customerService.removeCustomerGroupData(customer);
         }
         groupRepository.deleteById(groupId);
-        log.info("Group deleted successfully. Group ID: {}", groupId);
+        log.info(getCurrentTime() + ": " + "Group deleted successfully. Group ID: {}", groupId);
     }
 }

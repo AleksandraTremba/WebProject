@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,10 @@ public class CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
     private final TimerService timerService;
+
+    private LocalDateTime getCurrentTime() {
+        return LocalDateTime.now();
+    }
 
     public boolean customerExists(String username) {
         return customerRepository.existsByUsername(username);
@@ -77,14 +82,14 @@ public class CustomerService {
         customer.setGroupRole(null);
 
         customerRepository.save(customer);
-        log.info("Removed customer group data. Customer ID: {}", customer.getId());
+        log.info(getCurrentTime() + ": " + "Removed customer group data. Customer ID: {}", customer.getId());
     }
 
     public boolean customerIsGroupAdmin(Long id) {
         Customer customer = customerRepository.findById(id).orElse(null);
         if (customer != null) {
             boolean isGroupAdmin = customer.getGroupRole().equals(GroupRoles.ADMIN);
-            log.debug("Customer with ID {} is a group admin: {}", id, isGroupAdmin);
+            log.debug(getCurrentTime() + ": " + "Customer with ID {} is a group admin: {}", id, isGroupAdmin);
             return isGroupAdmin;
         }
         return false;
@@ -93,32 +98,32 @@ public class CustomerService {
     public CustomerDTO getCustomerData(String username) {
         Optional<Customer> dataShell = customerRepository.findByUsername(username);
         CustomerDTO customerDTO = dataShell.map(CustomerMapper.INSTANCE::toDTO).orElse(null);
-        log.debug("Retrieved customer data for username: {}", username);
+        log.debug(getCurrentTime() + ": " + "Retrieved customer data for username: {}", username);
         return customerDTO;
     }
 
     public CustomerDTO login(CustomerInitDTO request) {
         Customer customer = customerRepository.findByUsername(request.getUsername()).orElse(null);
         if (customer == null) {
-            log.info("Login failed. Customer not found with username: {}", request.getUsername());
+            log.warn(getCurrentTime() + ": " + "Login failed. Customer not found with username: {}", request.getUsername());
             return null;
         }
 
         if (!passwordEncoder.matches(request.getPassword(), customer.getPassword())) {
-            log.info("Login failed. Incorrect password for customer with username: {}", request.getUsername());
+            log.warn(getCurrentTime() + ": " + "Login failed. Incorrect password for customer with username: {}", request.getUsername());
             return null;
         }
 
         String token = tokenProvider.generateToken(request.getUsername());
         CustomerDTO dto = CustomerMapper.INSTANCE.toDTO(customer);
         dto.setToken(token);
-        log.info("Customer logged in successfully. Username: {}", request.getUsername());
+        log.info(getCurrentTime() + ": " + "Customer logged in successfully. Username: {}", request.getUsername());
         return dto;
     }
 
     public CustomerInitDTO register(CustomerInitDTO request) {
         if (customerExists(request.getUsername())) {
-            log.info("Registration failed. Customer with username {} already exists.", request.getUsername());
+            log.warn(getCurrentTime() + ": " + "Registration failed. Customer with username {} already exists.", request.getUsername());
             return null;
         }
 
@@ -129,24 +134,24 @@ public class CustomerService {
         customer.setTimerId(timerService.createTimer(customer.getId()));
         customerRepository.save(customer);
 
-        log.info("Customer registered successfully. Username: {}", request.getUsername());
+        log.info(getCurrentTime() + ": " + "Customer registered successfully. Username: {}", request.getUsername());
         return request;
     }
 
     private CustomerChangeDataDTO update(CustomerChangeDataDTO request, CustomerServiceUpdate updateType) {
         Customer customer = customerRepository.findByUsername(request.getUsername()).orElse(null);
         if (customer == null) {
-            log.info("Update failed. Customer not found with username: {}", request.getUsername());
+            log.warn(getCurrentTime() + ": " + "Update failed. Customer not found with username: {}", request.getUsername());
             return null;
         }
 
         if (updateType.equals(CustomerServiceUpdate.CHANGE_USERNAME)) {
             customer.setUsername(request.getNewData());
-            log.info("Updated customer username. New username: {}", request.getNewData());
+            log.info(getCurrentTime() + ": " + "Updated customer username. New username: {}", request.getNewData());
         }
         if (updateType.equals(CustomerServiceUpdate.CHANGE_PASSWORD)) {
             customer.setPassword(request.getNewData());
-            log.info("Updated customer password. Customer ID: {}", customer.getId());
+            log.info(getCurrentTime() + ": " + "Updated customer password. Customer ID: {}", customer.getId());
         }
 
         customerRepository.save(customer);
@@ -172,11 +177,11 @@ public class CustomerService {
         if (customerOptional.isPresent()) {
             Customer customer = customerOptional.get();
             customerRepository.deleteById(customer.getId());
-            log.info("Customer deleted successfully. Username: {}", request.getUsername());
+            log.info(getCurrentTime() + ": " + "Customer deleted successfully. Username: {}", request.getUsername());
             return true;
         }
 
-        log.info("Deletion failed. Customer not found with username: {}", request.getUsername());
+        log.warn(getCurrentTime() + ": " + "Deletion failed. Customer not found with username: {}", request.getUsername());
         return false;
     }
 }

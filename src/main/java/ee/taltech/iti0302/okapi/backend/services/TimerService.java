@@ -31,20 +31,22 @@ public class TimerService {
         return dto;
     }
 
+    private LocalDateTime getCurrentTime() {
+        return LocalDateTime.now();
+    }
+
     public TimerDTO getTimerById(Long id) {
-        log.debug("Fetching timer by ID: {}", id);
         TimerDTO timerDTO = TimerMapper.INSTANCE.toDTO(timerRepository.findById(id).orElse(null));
-        log.debug("Retrieved timer: {}", timerDTO);
+        log.debug(getCurrentTime() + ": " + "Retrieved timer: {}", timerDTO);
         return timerDTO;
     }
 
     public Long createTimer(Long customerId) {
-        log.info("Creating timer for customer with ID: {}", customerId);
         Timer timer = new Timer();
         timer.setCustomerId(customerId);
 
         timerRepository.save(timer);
-        log.info("Timer created successfully. Timer ID: {}", timer.getId());
+        log.debug(getCurrentTime() + ": " + "Timer created successfully. Timer ID: {}", timer.getId());
         return timer.getId();
     }
 
@@ -52,10 +54,10 @@ public class TimerService {
         Long id = dto.getId();
         Integer time = dto.getRunningTime();
 
-        log.info("Starting timer with ID: {}", id);
+        log.info(getCurrentTime() + ": " + "Starting timer with ID: {}", id);
         Timer timer = timerRepository.findById(id).orElse(null);
         if (timer == null) {
-            log.warn("Timer not found with ID: {}", id);
+            log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", id);
             return null;
         }
 
@@ -77,15 +79,15 @@ public class TimerService {
         TimerMapper.INSTANCE.updateTimerFromDTO(dto, timer);
         timerRepository.save(timer);
 
-        log.info("Timer started successfully. Timer ID: {}", id);
+        log.info(getCurrentTime() + ": " + "Timer started successfully. Timer ID: {}", id);
         return dto;
     }
 
     public TimerDTO stopTimer(Long id) {
-        log.info("Stopping timer with ID: {}", id);
+        log.info(getCurrentTime() + ": " + "Stopping timer with ID: {}", id);
         Timer timer = timerRepository.findById(id).orElse(null);
         if (timer == null) {
-            log.warn("Timer not found with ID: {}", id);
+            log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", id);
             return null;
         }
 
@@ -98,15 +100,15 @@ public class TimerService {
         TimerMapper.INSTANCE.updateTimerFromDTO(dto, timer);
         timerRepository.save(timer);
 
-        log.info("Timer stopped successfully. Timer ID: {}", id);
+        log.info(getCurrentTime() + ": " + "Timer stopped successfully. Timer ID: {}", id);
         return dto;
     }
 
     public TimerDTO resetTimer(Long id) {
-        log.info("Resetting timer with ID: {}", id);
+        log.info(getCurrentTime() + ": " + "Resetting timer with ID: {}", id);
         Timer timer = timerRepository.findById(id).orElse(null);
         if (timer == null) {
-            log.warn("Timer not found with ID: {}", id);
+            log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", id);
             return null;
         }
 
@@ -116,7 +118,7 @@ public class TimerService {
         TimerMapper.INSTANCE.updateTimerFromDTO(dto, timer);
         timerRepository.save(timer);
 
-        log.info("Timer reset successfully. Timer ID: {}", id);
+        log.info(getCurrentTime() + ": " + "Timer reset successfully. Timer ID: {}", id);
         return dto;
     }
 }
