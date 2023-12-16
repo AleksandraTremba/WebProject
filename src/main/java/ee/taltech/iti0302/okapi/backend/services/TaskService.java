@@ -76,15 +76,4 @@ public class TaskService {
                 .map(TaskMapper.INSTANCE::toDTO)
                 .toList();
     }
-
-    private void updateRecords() {
-        Records records = recordsRepository.findById(1L).orElseGet(() -> {
-            Records newRecords = new Records();
-            recordsRepository.save(newRecords);
-            return newRecords;
-        });
-
-        records.setNumberOfTasks(records.getNumberOfTasks() + 1);
-        recordsRepository.save(records);
-    }
 }
