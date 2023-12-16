@@ -4,12 +4,17 @@ import ee.taltech.iti0302.okapi.backend.components.TaskMapper;
 import ee.taltech.iti0302.okapi.backend.dto.TaskDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Records;
 import ee.taltech.iti0302.okapi.backend.entities.Task;
+import ee.taltech.iti0302.okapi.backend.enums.TaskStatus;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import ee.taltech.iti0302.okapi.backend.repository.TaskRepository;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,12 +24,15 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final RecordsRepository recordsRepository;
 
-    public List<TaskDTO> getAllTasks() {
-        List<Task> task = taskRepository.findAll();
-        return task.stream()
+    public List<TaskDTO> getAllTasks(int page) {
+        Sort sort = Sort.by("status").descending();
+        Pageable pageRequest = PageRequest.of(page, 10, sort);
+        Page<Task> task = taskRepository.findAll(pageRequest);
+        return task.getContent().stream()
                 .map(TaskMapper.INSTANCE::toDTO)
                 .toList();
     }
+
 
     public TaskDTO getTaskById(long id) {
         Optional<Task> task = taskRepository.findById(id);
@@ -56,6 +64,14 @@ public class TaskService {
 
     public void deleteTask(long id) {
         taskRepository.deleteById(id);
+    }
+
+    public List<TaskDTO> findByTitle(int page, String title) {
+        Pageable paging = PageRequest.of(page, 10);
+        Page<Task> tasks = taskRepository.findByTitle(title, paging);
+        return tasks.getContent().stream()
+                .map(TaskMapper.INSTANCE::toDTO)
+                .toList();
     }
 
     private void updateRecords() {
