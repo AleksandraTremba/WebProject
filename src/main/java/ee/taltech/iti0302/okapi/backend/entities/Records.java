@@ -16,7 +16,7 @@ public class Records {
 
     @Setter
     @Column(nullable = false)
-    private Integer numberOfUsers = 0;
+    private Integer numberOfCustomers = 0;
 
     @Setter
     @Column(nullable = false)

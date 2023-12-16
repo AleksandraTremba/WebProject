@@ -9,11 +9,13 @@ import ee.taltech.iti0302.okapi.backend.dto.timer.DummyTimer;
 import ee.taltech.iti0302.okapi.backend.exceptions.ApplicationRuntimeException;
 import ee.taltech.iti0302.okapi.backend.repository.TimerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class TimerService {
@@ -28,8 +30,14 @@ public class TimerService {
                 .build();
     }
 
+    private LocalDateTime getCurrentTime() {
+        return LocalDateTime.now();
+    }
+
     public TimerDTO getTimerById(Long id) {
-        return TimerMapper.INSTANCE.toDTO(timerRepository.findById(id).orElse(null));
+        TimerDTO timerDTO = TimerMapper.INSTANCE.toDTO(timerRepository.findById(id).orElse(null));
+        log.debug(getCurrentTime() + ": " + "Retrieved timer: {}", timerDTO);
+        return timerDTO;
     }
 
     public Long createTimer(Long customerId) {
@@ -37,6 +45,7 @@ public class TimerService {
         timer.setCustomerId(customerId);
 
         timerRepository.save(timer);
+        log.debug(getCurrentTime() + ": " + "Timer created successfully. Timer ID: {}", timer.getId());
         return timer.getId();
     }
 
@@ -44,17 +53,21 @@ public class TimerService {
         Long id = dto.getId();
         Integer time = dto.getRunningTime();
 
+        log.info(getCurrentTime() + ": " + "Starting timer with ID: {}", id);
         Timer timer = timerRepository.findById(id).orElse(null);
-        if (timer == null)
+        if (timer == null) {
+            log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", id);
             return null;
+        }
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime end;
 
-        if (!timer.getRunningTime().equals(time))
+        if (!timer.getRunningTime().equals(time)) {
             end = now.plusSeconds(time);
-        else
+        } else {
             end = now.plusSeconds(timer.getRemainingTime());
+        }
 
         Long remainingTime = 0L;
 
@@ -65,13 +78,17 @@ public class TimerService {
         TimerMapper.INSTANCE.updateTimerFromExternalDataset(dto, timer);
         timerRepository.save(timer);
 
+        log.info(getCurrentTime() + ": " + "Timer started successfully. Timer ID: {}", id);
         return dto;
     }
 
     public TimerDTO stopTimer(Long id) {
+        log.info(getCurrentTime() + ": " + "Stopping timer with ID: {}", id);
         Timer timer = timerRepository.findById(id).orElse(null);
-        if (timer == null)
+        if (timer == null) {
+            log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", id);
             return null;
+        }
 
         LocalDateTime now = LocalDateTime.now();
         Long remainingTime = ChronoUnit.SECONDS.between(now, timer.getEndTime());
@@ -82,14 +99,18 @@ public class TimerService {
         TimerMapper.INSTANCE.updateTimerFromExternalDataset(dto, timer);
         timerRepository.save(timer);
 
+        log.info(getCurrentTime() + ": " + "Timer stopped successfully. Timer ID: {}", id);
         return dto;
     }
 
     public TimerDTO resetTimer(TimerResetDTO request) {
         Timer timer = timerRepository.findById(request.getId()).orElse(null);
 
-        if (timer == null)
+        log.info(getCurrentTime() + ": " + "Resetting timer with ID: {}", request.getId());
+        if (timer == null) {
+            log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", request.getId());
             throw new ApplicationRuntimeException("Timer does not exists!");
+        }
 
         if (!timer.getCustomerId().equals(request.getCustomerId()))
             throw new ApplicationRuntimeException("You cannot change others' timers, stop it!");
@@ -98,6 +119,7 @@ public class TimerService {
         TimerMapper.INSTANCE.updateTimerFromExternalDataset(dummy, timer);
         timerRepository.save(timer);
 
+        log.info(getCurrentTime() + ": " + "Timer reset successfully. Timer ID: {}", request.getId());
         return TimerMapper.INSTANCE.toDTO(timer);
     }
 

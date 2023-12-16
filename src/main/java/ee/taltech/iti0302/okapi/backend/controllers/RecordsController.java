@@ -3,7 +3,6 @@ package ee.taltech.iti0302.okapi.backend.controllers;
 import ee.taltech.iti0302.okapi.backend.services.RecordsService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,7 @@ public class RecordsController {
 
     @GetMapping("/users")
     private String getUsersNumber() {
-        return recordsService.getUsersNumber();
+        return recordsService.getCustomersAmount();
     }
 
     @GetMapping("/timers")
