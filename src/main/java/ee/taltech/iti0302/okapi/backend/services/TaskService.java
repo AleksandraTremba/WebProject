@@ -74,14 +74,4 @@ public class TaskService {
         taskRepository.deleteById(id);
         log.info(getCurrentTime() + ": " + "Task deleted successfully. Task ID: {}", id);
     }
-//    private void updateRecords() {
-//        Records records = recordsRepository.findById(1L).orElseGet(() -> {
-//            Records newRecords = new Records();
-//            recordsRepository.save(newRecords);
-//            return newRecords;
-//        });
-//
-//        records.setNumberOfTasks(records.getNumberOfTasks() + 1);
-//        recordsRepository.save(records);
-//    }
 }

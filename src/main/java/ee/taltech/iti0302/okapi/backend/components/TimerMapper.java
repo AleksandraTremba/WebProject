@@ -1,5 +1,6 @@
 package ee.taltech.iti0302.okapi.backend.components;
 
+import ee.taltech.iti0302.okapi.backend.dto.timer.DummyTimer;
 import ee.taltech.iti0302.okapi.backend.dto.timer.TimerDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Timer;
 
@@ -14,5 +15,6 @@ public interface TimerMapper {
     TimerDTO toDTO(Timer timer);
     Timer toEntity(TimerDTO dto);
 
-    void updateTimerFromDTO(TimerDTO dto, @MappingTarget Timer entity);
+    void updateTimerFromExternalDataset(TimerDTO dto, @MappingTarget Timer entity);
+    void updateTimerFromExternalDataset(DummyTimer dummy, @MappingTarget Timer entity);
 }

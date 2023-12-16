@@ -1,10 +1,12 @@
 package ee.taltech.iti0302.okapi.backend.services;
 
 import ee.taltech.iti0302.okapi.backend.components.TimerMapper;
+import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.timer.TimerDTO;
-import ee.taltech.iti0302.okapi.backend.entities.Records;
+import ee.taltech.iti0302.okapi.backend.dto.timer.TimerResetDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Timer;
-import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
+import ee.taltech.iti0302.okapi.backend.dto.timer.DummyTimer;
+import ee.taltech.iti0302.okapi.backend.exceptions.ApplicationRuntimeException;
 import ee.taltech.iti0302.okapi.backend.repository.TimerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,14 +21,13 @@ import java.util.Optional;
 public class TimerService {
     private final TimerRepository timerRepository;
 
-    private TimerDTO createNullDTO() {
-        TimerDTO dto = new TimerDTO();
-        dto.setRunningTime(0);
-        dto.setRemainingTime(null);
-        dto.setEndTime(null);
-        dto.setStartTime(null);
-
-        return dto;
+    private DummyTimer createNullTimer() {
+        return DummyTimer.builder()
+                .startTime(null)
+                .endTime(null)
+                .remainingTime(null)
+                .runningTime(0)
+                .build();
     }
 
     private LocalDateTime getCurrentTime() {
@@ -76,7 +75,7 @@ public class TimerService {
         dto.setEndTime(end);
         dto.setRemainingTime(remainingTime);
 
-        TimerMapper.INSTANCE.updateTimerFromDTO(dto, timer);
+        TimerMapper.INSTANCE.updateTimerFromExternalDataset(dto, timer);
         timerRepository.save(timer);
 
         log.info(getCurrentTime() + ": " + "Timer started successfully. Timer ID: {}", id);
@@ -97,28 +96,34 @@ public class TimerService {
         TimerDTO dto = TimerMapper.INSTANCE.toDTO(timer);
         dto.setRemainingTime(remainingTime);
 
-        TimerMapper.INSTANCE.updateTimerFromDTO(dto, timer);
+        TimerMapper.INSTANCE.updateTimerFromExternalDataset(dto, timer);
         timerRepository.save(timer);
 
         log.info(getCurrentTime() + ": " + "Timer stopped successfully. Timer ID: {}", id);
         return dto;
     }
 
-    public TimerDTO resetTimer(Long id) {
-        log.info(getCurrentTime() + ": " + "Resetting timer with ID: {}", id);
-        Timer timer = timerRepository.findById(id).orElse(null);
+    public TimerDTO resetTimer(TimerResetDTO request) {
+        Timer timer = timerRepository.findById(request.getId()).orElse(null);
+
+        log.info(getCurrentTime() + ": " + "Resetting timer with ID: {}", request.getId());
         if (timer == null) {
-            log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", id);
-            return null;
+            log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", request.getId());
+            throw new ApplicationRuntimeException("Timer does not exists!");
         }
 
-        TimerDTO dto = createNullDTO();
-        dto.setId(timer.getId());
+        if (!timer.getCustomerId().equals(request.getCustomerId()))
+            throw new ApplicationRuntimeException("You cannot change others' timers, stop it!");
 
-        TimerMapper.INSTANCE.updateTimerFromDTO(dto, timer);
+        DummyTimer dummy = createNullTimer();
+        TimerMapper.INSTANCE.updateTimerFromExternalDataset(dummy, timer);
         timerRepository.save(timer);
 
-        log.info(getCurrentTime() + ": " + "Timer reset successfully. Timer ID: {}", id);
-        return dto;
+        log.info(getCurrentTime() + ": " + "Timer reset successfully. Timer ID: {}", request.getId());
+        return TimerMapper.INSTANCE.toDTO(timer);
+    }
+
+    public void deleteTimer(Long id) {
+        timerRepository.deleteById(id);
     }
 }
