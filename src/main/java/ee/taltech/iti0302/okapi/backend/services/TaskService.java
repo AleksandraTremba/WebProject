@@ -4,7 +4,6 @@ import ee.taltech.iti0302.okapi.backend.components.TaskMapper;
 import ee.taltech.iti0302.okapi.backend.dto.TaskDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Records;
 import ee.taltech.iti0302.okapi.backend.entities.Task;
-import ee.taltech.iti0302.okapi.backend.enums.TaskStatus;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import ee.taltech.iti0302.okapi.backend.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +13,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class TaskService {
@@ -64,6 +66,7 @@ public class TaskService {
 
     public void deleteTask(long id) {
         taskRepository.deleteById(id);
+        log.info(getCurrentTime() + ": " + "Task deleted successfully. Task ID: {}", id);
     }
 
     public List<TaskDTO> findByTitle(int page, String title) {
