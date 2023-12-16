@@ -1,55 +1,62 @@
 package ee.taltech.iti0302.okapi.backend.services;
 
-import ee.taltech.iti0302.okapi.backend.components.GroupMapper;
 import ee.taltech.iti0302.okapi.backend.components.RecordsMapper;
-import ee.taltech.iti0302.okapi.backend.dto.RecordsDTO;
-import ee.taltech.iti0302.okapi.backend.entities.Group;
+import ee.taltech.iti0302.okapi.backend.dto.records.RecordsDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Records;
-import ee.taltech.iti0302.okapi.backend.entities.Task;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
-import ee.taltech.iti0302.okapi.backend.repository.TimerRepository;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class RecordsService {
-
     private final RecordsRepository recordsRepository;
+
+    private LocalDateTime getCurrentTime() {
+        return LocalDateTime.now();
+    }
 
     public RecordsDTO getRecords() {
         Optional<Records> records = recordsRepository.findById(1L);
-        return records.map(RecordsMapper.INSTANCE::toDTO).orElse(null);
+        RecordsDTO recordsDTO = records.map(RecordsMapper.INSTANCE::toDTO).orElse(null);
+        log.info(getCurrentTime() + ": " + "Retrieved records: {}", recordsDTO);
+        return recordsDTO;
     }
 
-    public String getUsersNumber() {
+    public String getCustomersAmount() {
         Optional<Records> optionalRecords = recordsRepository.findById(1L);
-        Records records;
-        records = optionalRecords.orElseGet(Records::new);
-        return records.getNumberOfUsers().toString();
+        Records records = optionalRecords.orElseGet(Records::new);
+        String numberOfCustomers = records.getNumberOfCustomers().toString();
+        log.info(getCurrentTime() + ": " + "Fetched total amount of customers: {}", numberOfCustomers);
+        return numberOfCustomers;
     }
 
     public String getTimersNumber() {
         Optional<Records> optionalRecords = recordsRepository.findById(1L);
-        Records records;
-        records = optionalRecords.orElseGet(Records::new);
-        return records.getNumberOfTimers().toString();
+        Records records = optionalRecords.orElseGet(Records::new);
+        String numberOfTimers = records.getNumberOfTimers().toString();
+        log.info(getCurrentTime() + ": " + "Fetched total amount of timers: {}", numberOfTimers);
+        return numberOfTimers;
     }
 
     public String getGroupsNumber() {
         Optional<Records> optionalRecords = recordsRepository.findById(1L);
-        Records records;
-        records = optionalRecords.orElseGet(Records::new);
-        return records.getNumberOfGroups().toString();
+        Records records = optionalRecords.orElseGet(Records::new);
+        String numberOfGroups = records.getNumberOfGroups().toString();
+        log.info(getCurrentTime() + ": " + "Fetched total amount of groups: {}", numberOfGroups);
+        return numberOfGroups;
     }
 
     public String getTasksNumber() {
         Optional<Records> optionalRecords = recordsRepository.findById(1L);
-        Records records;
-        records = optionalRecords.orElseGet(Records::new);
-        return records.getNumberOfTasks().toString();
+        Records records = optionalRecords.orElseGet(Records::new);
+        String numberOfTasks = records.getNumberOfTasks().toString();
+        log.info(getCurrentTime() + ": " + "Fetched total amount of tasks: {}", numberOfTasks);
+        return numberOfTasks;
     }
 }

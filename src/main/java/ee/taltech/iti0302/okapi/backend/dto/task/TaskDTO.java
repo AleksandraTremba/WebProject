@@ -1,9 +1,10 @@
-package ee.taltech.iti0302.okapi.backend.dto;
+package ee.taltech.iti0302.okapi.backend.dto.task;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Data
+@Builder
 public class TaskDTO {
     private Long id;
 

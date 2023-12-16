@@ -1,7 +1,10 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
-import ee.taltech.iti0302.okapi.backend.dto.TimerDTO;
+import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
+import ee.taltech.iti0302.okapi.backend.dto.timer.TimerDTO;
+import ee.taltech.iti0302.okapi.backend.dto.timer.TimerResetDTO;
 import ee.taltech.iti0302.okapi.backend.services.TimerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("api/timers")
 public class TimerController {
-    @NonNull
     private final TimerService timerService;
 
     //curl http://localhost:8080/api/timer
@@ -21,8 +23,8 @@ public class TimerController {
 
     //curl -X POST http://localhost:8080/api/timer/start&id?=
     @PostMapping("/start")
-    public TimerDTO startTimer(@RequestParam Long id) {
-        return timerService.startTimer(id);
+    public TimerDTO startTimer(@RequestBody @Valid TimerDTO dto) {
+        return timerService.startTimer(dto);
     }
 
     //curl -X POST http://localhost:8080/api/timer/stop&id?=
@@ -31,8 +33,8 @@ public class TimerController {
         return timerService.stopTimer(id);
     }
 
-    @PostMapping("/create")
-    public TimerDTO createTimer(@RequestParam Long customerId) {
-        return timerService.createTimer(customerId);
+    @PostMapping("/reset")
+    public TimerDTO resetTimer(@RequestBody TimerResetDTO request) {
+        return timerService.resetTimer(request);
     }
 }

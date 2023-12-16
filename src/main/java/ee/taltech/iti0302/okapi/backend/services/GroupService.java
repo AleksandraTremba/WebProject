@@ -1,122 +1,119 @@
 package ee.taltech.iti0302.okapi.backend.services;
 
 import ee.taltech.iti0302.okapi.backend.components.GroupMapper;
-import ee.taltech.iti0302.okapi.backend.components.TimerMapper;
-import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
-import ee.taltech.iti0302.okapi.backend.dto.GroupDTO;
-import ee.taltech.iti0302.okapi.backend.dto.TimerDTO;
+import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
+import ee.taltech.iti0302.okapi.backend.dto.group.GroupCreateDTO;
+import ee.taltech.iti0302.okapi.backend.dto.group.GroupDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.entities.Group;
-import ee.taltech.iti0302.okapi.backend.entities.Records;
-import ee.taltech.iti0302.okapi.backend.entities.Timer;
+import ee.taltech.iti0302.okapi.backend.enums.GroupCustomerActionType;
 import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
-import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 import ee.taltech.iti0302.okapi.backend.repository.GroupRepository;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class GroupService {
-
     private final GroupRepository groupRepository;
-    private final CustomerRepository customerRepository;
-    private final RecordsRepository recordsRepository;
+    private final CustomerService customerService;
 
-    public GroupDTO createGroup(GroupDTO groupDTO) {
-        // TODO: 27.11.2023 replace getADmin.getId with token
-        Optional<Customer> customer = customerRepository.findById(groupDTO.getAdminId());
-        if (customer.isPresent()) {
-            Group group = GroupMapper.INSTANCE.toEntity(groupDTO);
-            groupRepository.save(group);
-
-            customer.get().setGroupId(group.getId());
-            customer.get().setGroupRole(GroupRoles.ADMIN);
-
-            customerRepository.save(customer.get());
-            updateRecords();
-
-            return GroupMapper.INSTANCE.toDTO(group);
-        }
-
-        return null;
+    private LocalDateTime getCurrentTime() {
+        return LocalDateTime.now();
     }
 
-    public GroupDTO getGroupById(long groupId) {
+    private GroupDTO getGroupById(long groupId) {
         Optional<Group> group = groupRepository.findById(groupId);
         return group.map(GroupMapper.INSTANCE::toDTO).orElse(null);
     }
 
     public GroupDTO searchGroupById(long groupId) {
+        log.info(getCurrentTime() + ": " + "Searching for group with ID: {}", groupId);
         return getGroupById(groupId);
     }
 
     public List<GroupDTO> getAllGroups() {
+        log.debug(getCurrentTime() + ": " + "Retrieving all groups");
         List<Group> group = groupRepository.findAll();
-        return group.stream()
+        List<GroupDTO> groupDTOs = group.stream()
                 .map(GroupMapper.INSTANCE::toDTO)
                 .toList();
+
+        log.info(getCurrentTime() + ": " + "Retrieved {} groups.", groupDTOs.size());
+        return groupDTOs;
     }
 
-    public GroupDTO addUserToGroup(CustomerDTO customerDTO, long groupId) {
-        Optional<Customer> optionalCustomer = customerRepository.findById(customerDTO.getId());
-        Group group = groupRepository.findById(groupId).orElse(null);
+    private GroupDTO createGroup(Long customerId, String groupName) {
+        log.debug(getCurrentTime() + ": " + "Creating group: {} for customer with ID: {}", groupName, customerId);
+        GroupCreateDTO temporaryShell = new GroupCreateDTO(groupName, customerId);
+        Group group = GroupMapper.INSTANCE.toEntity(temporaryShell);
 
-        if (optionalCustomer.isPresent() && group != null) {
-            Customer customer = optionalCustomer.get();
-            customer.setGroupId(group.getId());
-            if (customer.getGroupRole() != GroupRoles.ADMIN) {
-                customer.setGroupRole(GroupRoles.USER);
-            }
-            customerRepository.save(customer);
-            return GroupMapper.INSTANCE.toDTO(group);
-        }
-        return null;
+        groupRepository.save(group);
+
+        customerService.updateCustomerGroupData(customerId, group.getId(), GroupRoles.ADMIN);
+
+        log.info(getCurrentTime() + ": " + "Group created successfully. Group ID: {}", group.getId());
+        return GroupMapper.INSTANCE.toDTO(group);
     }
 
-    public GroupDTO removeUserFromGroup(CustomerDTO customerDTO, long groupId) {
-        Optional<Customer> optionalCustomer = customerRepository.findById(customerDTO.getId());
-        Group group = groupRepository.findById(groupId).orElse(null);
-        if (optionalCustomer.isPresent() && group != null) {
-            Customer customer = optionalCustomer.get();
-            customer.setGroupId(null);
-            if (customer.getGroupRole() == GroupRoles.USER) {
-                customer.setGroupRole(null);
-            } else {
-                deleteGroup(groupId);
-            }
-            customerRepository.save(customer);
-            return GroupMapper.INSTANCE.toDTO(group);
+    private GroupDTO addCustomerToGroup(Long customerId, Group group) {
+        customerService.updateCustomerGroupData(customerId, group.getId(), GroupRoles.USER);
+        log.info(getCurrentTime() + ": " + "Customer added to group successfully. Group ID: {}", group.getId());
+        return GroupMapper.INSTANCE.toDTO(group);
+    }
+
+    private GroupDTO removeCustomerFromGroup(Long customerId, Group group) {
+        if (customerService.customerIsGroupAdmin(customerId)) {
+            deleteGroup(group.getId());
+        } else {
+            customerService.removeCustomerGroupData(customerId);
         }
+        log.info(getCurrentTime() + ": " + "Customer removed from group successfully. Group ID: {}", group.getId());
+        return GroupMapper.INSTANCE.toDTO(group);
+    }
+
+    public GroupDTO manipulateCustomerAndGroup(CustomerDTO dto, String groupName, GroupCustomerActionType action) {
+        Long customerId = customerService.getCustomerIdByUsername(dto.getUsername());
+        if (customerId == null) {
+            log.warn(getCurrentTime() + ": " + "Could not find customer with username: {}", dto.getUsername());
+            return null;
+        }
+
+        if (action.equals(GroupCustomerActionType.CREATE)) {
+            return createGroup(customerId, groupName);
+        } else {
+            Group group = groupRepository.findByName(groupName).orElse(null);
+            if (group == null) {
+                log.warn(getCurrentTime() + ": " + "Could not find group with name: {}", groupName);
+                return null;
+            }
+
+            if (action.equals(GroupCustomerActionType.ADD)) {
+                return addCustomerToGroup(customerId, group);
+            }
+            if (action.equals(GroupCustomerActionType.DELETE)) {
+                return removeCustomerFromGroup(customerId, group);
+            }
+        }
+
         return null;
     }
 
     public void deleteGroup(long groupId) {
-        List<Customer> groupUsers = customerRepository.findByGroupId(groupId);
+        List<Customer> groupUsers = customerService.findByGroupId(groupId);
         for (Customer customer : groupUsers) {
-            customer.setGroupId(null);
-            customer.setGroupRole(null);
-            customerRepository.save(customer);
+            customerService.removeCustomerGroupData(customer);
         }
         groupRepository.deleteById(groupId);
-
-    }
-
-    private void updateRecords() {
-        Records records = recordsRepository.findById(1L).orElseGet(() -> {
-            Records newRecords = new Records();
-            recordsRepository.save(newRecords);
-            return newRecords;
-        });
-
-        records.setNumberOfGroups(records.getNumberOfGroups() + 1);
-        recordsRepository.save(records);
+        log.info(getCurrentTime() + ": " + "Group deleted successfully. Group ID: {}", groupId);
     }
 }
-

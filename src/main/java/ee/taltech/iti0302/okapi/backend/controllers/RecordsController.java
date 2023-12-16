@@ -3,7 +3,6 @@ package ee.taltech.iti0302.okapi.backend.controllers;
 import ee.taltech.iti0302.okapi.backend.services.RecordsService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/records")
+@RequestMapping("api/public/records")
 @CrossOrigin(origins = "http://127.0.0.1:5173")
 public class RecordsController {
 
@@ -20,7 +19,7 @@ public class RecordsController {
 
     @GetMapping("/users")
     private String getUsersNumber() {
-        return recordsService.getUsersNumber();
+        return recordsService.getCustomersAmount();
     }
 
     @GetMapping("/timers")
