@@ -9,5 +9,6 @@ import lombok.Data;
 @Builder
 public class CustomerChangeDataDTO {
     private String username;
+    private String password;
     private String newData;
 }

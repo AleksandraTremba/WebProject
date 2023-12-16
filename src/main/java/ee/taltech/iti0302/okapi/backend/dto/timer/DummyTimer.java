@@ -1,23 +1,17 @@
 package ee.taltech.iti0302.okapi.backend.dto.timer;
 
+import lombok.Builder;
+import lombok.Data;
 
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class TimerDTO {
-    @NotBlank
-    private Long id;
-
+public class DummyTimer {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
     // In ms
-    @NotBlank
     private Integer runningTime;
     private Long remainingTime;
 }
