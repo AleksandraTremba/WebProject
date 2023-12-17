@@ -34,7 +34,8 @@ public class TimerServiceTest {
     private JwtTokenProvider tokenProvider;
     @Mock
     private CustomerService customerService;
-
+    @Mock
+    private RecordsService recordsService;
     @Mock
     private TimerRepository timerRepository;
     @Spy

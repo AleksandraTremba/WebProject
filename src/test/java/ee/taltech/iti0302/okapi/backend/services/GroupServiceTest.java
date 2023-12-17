@@ -31,6 +31,9 @@ class GroupServiceTest {
     @Mock
     private CustomerService customerService;
 
+    @Mock
+    private RecordsService recordsService;
+
     @InjectMocks
     private GroupService groupService;
 

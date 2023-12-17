@@ -25,6 +25,8 @@ import static org.mockito.Mockito.*;
 class TaskServiceTest {
     @Mock
     private TaskRepository taskRepository;
+    @Mock
+    private RecordsService recordsService;
     @InjectMocks
     private TaskService taskService;
 

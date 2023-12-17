@@ -7,6 +7,7 @@ import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerInitDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
+import ee.taltech.iti0302.okapi.backend.enums.RecordType;
 import ee.taltech.iti0302.okapi.backend.exceptions.ApplicationRuntimeException;
 import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 import ee.taltech.iti0302.okapi.backend.security.JwtTokenProvider;
@@ -36,6 +37,8 @@ class CustomerServiceTest {
     private JwtTokenProvider tokenProvider;
     @Mock
     private TimerService timerService;
+    @Mock
+    private RecordsService recordsService;
     @Spy
     private CustomerMapper customerMapper = new CustomerMapperImpl();
     @InjectMocks
@@ -133,6 +136,7 @@ class CustomerServiceTest {
         given(customerRepository.existsByUsername(username)).willReturn(false);
         given(passwordEncoder.encode(password)).willReturn(password);
         given(timerService.createTimer(customer.getId())).willReturn(timerId);
+
 
         // When
         CustomerDTO response = customerService.register(request);
