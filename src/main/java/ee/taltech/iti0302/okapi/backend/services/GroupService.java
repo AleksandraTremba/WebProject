@@ -111,7 +111,7 @@ public class GroupService {
         return null;
     }
 
-    public void deleteGroup(long groupId) {
+    public void deleteGroup(Long groupId) {
         List<Customer> groupUsers = customerService.findByGroupId(groupId);
         for (Customer customer : groupUsers) {
             customerService.removeCustomerGroupData(customer);

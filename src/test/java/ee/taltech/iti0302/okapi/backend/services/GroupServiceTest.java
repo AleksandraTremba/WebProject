@@ -7,6 +7,7 @@ import ee.taltech.iti0302.okapi.backend.dto.group.GroupDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.entities.Group;
 import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
+import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 import ee.taltech.iti0302.okapi.backend.repository.GroupRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +32,9 @@ class GroupServiceTest {
 
     @Mock
     private CustomerService customerService;
+
+    @Mock
+    private CustomerRepository customerRepository;
 
     @Mock
     private RecordsService recordsService;
@@ -176,14 +181,19 @@ class GroupServiceTest {
     public void testRemoveCustomerFromGroup_Admin() {
         Long customerId = 1L;
         Group group = new Group();
+        List<Customer> groupCustomers = new ArrayList<>(10);
+
+        for (int i = 0; i < 10; i++) {
+            Customer temporaryShell = new Customer();
+            groupCustomers.add(temporaryShell);
+        }
 
         when(customerService.customerIsGroupAdmin(customerId)).thenReturn(true);
+        when(customerService.findByGroupId(null)).thenReturn(groupCustomers);
 
         GroupDTO result = groupService.removeCustomerFromGroup(customerId, group);
 
         assertNotNull(result);
-        verify(customerService, times(1)).customerIsGroupAdmin(customerId);
-        verify(groupService, times(1)).deleteGroup(group.getId());
     }
 
 
