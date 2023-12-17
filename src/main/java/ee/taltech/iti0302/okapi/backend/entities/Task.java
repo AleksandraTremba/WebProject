@@ -6,8 +6,8 @@ import lombok.*;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Table(name = "tasks")
 public class Task {
