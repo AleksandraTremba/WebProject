@@ -32,7 +32,7 @@ public class TaskService {
         Sort sort = Sort.by("status").descending();
         Pageable pageRequest = PageRequest.of(page, 10, sort);
         Page<Task> task = taskRepository.findAll(pageRequest);
-        return task.getContent().stream()
+        List<TaskDTO> taskDTOs = task.getContent().stream()
                 .map(TaskMapper.INSTANCE::toDTO)
                 .toList();
         log.info(getCurrentTime() + ": " + "Retrieved {} tasks", taskDTOs.size());
