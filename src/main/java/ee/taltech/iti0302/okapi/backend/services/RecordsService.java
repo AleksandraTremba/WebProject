@@ -77,5 +77,6 @@ public class RecordsService {
         if (updateType.equals(RecordType.GROUPS)) {
             records.setNumberOfGroups(records.getNumberOfGroups() + 1);
         }
+        recordsRepository.save(records);
     }
 }
