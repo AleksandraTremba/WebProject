@@ -17,10 +17,14 @@ public class TaskController {
     private TaskService taskService;
 
     @GetMapping
-    public List<TaskDTO> getAllTasks() {
-        return taskService.getAllTasks();
+    public List<TaskDTO> getAllTasks(@RequestParam(defaultValue = "0") int page) {
+        return taskService.getAllTasks(page);
     }
 
+    @GetMapping("/title")
+    public List<TaskDTO> findByTitle(@RequestParam(defaultValue = "0") int page, @RequestParam() String title) {
+        return taskService.findByTitle(page, title);
+    }
     @GetMapping("/{id}")
     public TaskDTO getTaskById(@PathVariable long id) {
         return taskService.getTaskById(id);
