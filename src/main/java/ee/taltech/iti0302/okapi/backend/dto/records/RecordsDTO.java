@@ -13,7 +13,7 @@ public class RecordsDTO {
 
     private Long id;
 
-    private Integer numberOfUsers;
+    private Integer numberOfCustomers;
 
     private Integer numberOfTimers;
 
