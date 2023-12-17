@@ -5,8 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@NoArgsConstructor
-@RequiredArgsConstructor
+@Setter
+@Builder
+@AllArgsConstructor
 @Entity
 @Table(name = "tasks")
 public class Task {

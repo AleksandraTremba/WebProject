@@ -31,7 +31,7 @@ public class GroupService {
         return LocalDateTime.now();
     }
 
-    private GroupDTO getGroupById(long groupId) {
+    protected GroupDTO getGroupById(long groupId) {
         Optional<Group> group = groupRepository.findById(groupId);
         return group.map(GroupMapper.INSTANCE::toDTO).orElse(null);
     }
