@@ -1,5 +1,6 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
+import ee.taltech.iti0302.okapi.backend.dto.records.RecordsDTO;
 import ee.taltech.iti0302.okapi.backend.services.RecordsService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/public/records")
 @CrossOrigin(origins = "http://127.0.0.1:8081")
 public class RecordsController {
+    private final RecordsService recordsService;
 
-    @NonNull
-    private RecordsService recordsService;
+    @GetMapping("/")
+    private RecordsDTO getAllRecords() {
+        return recordsService.getRecords();
+    }
 
     @GetMapping("/users")
     private String getUsersNumber() {

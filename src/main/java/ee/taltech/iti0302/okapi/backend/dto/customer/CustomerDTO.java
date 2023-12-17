@@ -13,6 +13,7 @@ public class CustomerDTO {
     @NotBlank
     private String username;
 
+    private Long groupId;
     private Long timerId;
     private String token;
 }

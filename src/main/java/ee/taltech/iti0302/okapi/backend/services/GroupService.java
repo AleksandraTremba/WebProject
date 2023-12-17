@@ -1,14 +1,17 @@
 package ee.taltech.iti0302.okapi.backend.services;
 
+import ee.taltech.iti0302.okapi.backend.components.CustomerMapper;
 import ee.taltech.iti0302.okapi.backend.components.GroupMapper;
 import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.group.GroupCreateDTO;
 import ee.taltech.iti0302.okapi.backend.dto.group.GroupDTO;
+import ee.taltech.iti0302.okapi.backend.dto.group.GroupInfoTransferDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.entities.Group;
 import ee.taltech.iti0302.okapi.backend.enums.GroupCustomerActionType;
 import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
 import ee.taltech.iti0302.okapi.backend.enums.RecordType;
+import ee.taltech.iti0302.okapi.backend.exceptions.ApplicationRuntimeException;
 import ee.taltech.iti0302.okapi.backend.repository.GroupRepository;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +44,18 @@ public class GroupService {
     public GroupDTO searchGroupById(long groupId) {
         log.info(getCurrentTime() + ": " + "Searching for group with ID: {}", groupId);
         return getGroupById(groupId);
+    }
+
+    public List<CustomerDTO> getGroupMembers(Long groupId) throws ApplicationRuntimeException {
+        if (!groupRepository.existsById(groupId)) {
+            log.warn(getCurrentTime() + ": " + "Could not find group with ID {}", groupId);
+            throw new ApplicationRuntimeException("This group does not exist!");
+        }
+
+        return customerService.findByGroupId(groupId).stream()
+                .map(CustomerMapper.INSTANCE::toDTO)
+                .map(customerService::clearSensitiveInformation)
+                .toList();
     }
 
     public List<GroupDTO> getAllGroups() {

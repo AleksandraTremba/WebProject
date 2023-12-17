@@ -5,6 +5,7 @@ import ee.taltech.iti0302.okapi.backend.dto.records.RecordsDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Records;
 import ee.taltech.iti0302.okapi.backend.enums.CustomerServiceUpdate;
 import ee.taltech.iti0302.okapi.backend.enums.RecordType;
+import ee.taltech.iti0302.okapi.backend.exceptions.ApplicationRuntimeException;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,8 +64,12 @@ public class RecordsService {
     }
 
     public void updateRecords(RecordType updateType) {
-        Optional<Records> optionalRecords = recordsRepository.findById(1L);
-        Records records = optionalRecords.orElseGet(Records::new);
+        Records records = recordsRepository.findById(1L).orElse(null);
+        if (records == null) {
+            log.warn(getCurrentTime() + ": " + "Records entry with id {} could not be found", 1L);
+            throw new ApplicationRuntimeException("Records could not be found!");
+        }
+
         if (updateType.equals(RecordType.CUSTOMERS)) {
             records.setNumberOfCustomers(records.getNumberOfCustomers() + 1);
         }
@@ -77,5 +82,7 @@ public class RecordsService {
         if (updateType.equals(RecordType.GROUPS)) {
             records.setNumberOfGroups(records.getNumberOfGroups() + 1);
         }
+
+        recordsRepository.save(records);
     }
 }

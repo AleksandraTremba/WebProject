@@ -3,6 +3,7 @@ package ee.taltech.iti0302.okapi.backend.controllers;
 
 import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.group.GroupDTO;
+import ee.taltech.iti0302.okapi.backend.dto.group.GroupInfoTransferDTO;
 import ee.taltech.iti0302.okapi.backend.enums.GroupCustomerActionType;
 import ee.taltech.iti0302.okapi.backend.services.GroupService;
 import jakarta.validation.Valid;
@@ -18,13 +19,16 @@ import java.util.List;
 @RequestMapping("/api/groups")
 @CrossOrigin(origins = "http://127.0.0.1:8081")
 public class GroupController {
+    private final GroupService groupService;
 
-    @NonNull
-    private GroupService groupService;
-
-    @GetMapping
+    @GetMapping("")
     public List<GroupDTO> getAllGroups() {
         return groupService.getAllGroups();
+    }
+
+    @GetMapping("/members")
+    public List<CustomerDTO> getGroupMembers(@RequestParam Long groupId) {
+        return groupService.getGroupMembers(groupId);
     }
 
     @GetMapping("/{groupId}")

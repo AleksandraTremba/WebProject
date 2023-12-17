@@ -43,6 +43,14 @@ public class CustomerService {
     public List<Customer> findByGroupId(Long id) {
         return customerRepository.findByGroupId(id);
     }
+
+    public CustomerDTO clearSensitiveInformation(CustomerDTO dto) {
+        dto.setToken(null);
+        dto.setId(null);
+        dto.setTimerId(null);
+        return dto;
+    }
+
     public Long getCustomerIdByUsername(String username) {
         Customer customer = customerRepository.findByUsername(username).orElse(null);
         return customer != null ? customer.getId() : null;
