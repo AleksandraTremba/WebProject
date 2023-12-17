@@ -27,7 +27,6 @@ public class TaskService {
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
     }
-
     public List<TaskDTO> getAllTasks(int page) {
         Sort sort = Sort.by("status").descending();
         Pageable pageRequest = PageRequest.of(page, 10, sort);
@@ -39,7 +38,6 @@ public class TaskService {
         return taskDTOs;
     }
 
-
     public TaskDTO getTaskById(long id) {
         Optional<Task> task = taskRepository.findById(id);
         TaskDTO taskDTO = task.map(TaskMapper.INSTANCE::toDTO).orElse(null);
@@ -50,15 +48,15 @@ public class TaskService {
     public TaskDTO createTask(TaskDTO dto) {
         log.info(getCurrentTime() + ": " + "Creating task: {}", dto.getTitle());
         Task task = taskRepository.save(TaskMapper.INSTANCE.toEntity(dto));
-        dto.setId(task.getId());
         if (task.getId() != null) {
+            dto.setId(task.getId());
             log.info(getCurrentTime() + ": " + "Task created successfully. Task ID: {}", task.getId());
             return dto;
-        } else {
-            log.warn(getCurrentTime() + ": " + "Task creation failed");
-            return null;
         }
+        log.warn(getCurrentTime() + ": " + "Task creation failed");
+        return null;
     }
+
 
     public TaskDTO updateTask(TaskDTO dto) {
         log.info(getCurrentTime() + ": " + "Updating task with ID: {}", dto.getId());
@@ -78,8 +76,12 @@ public class TaskService {
     }
 
     public void deleteTask(long id) {
-        taskRepository.deleteById(id);
-        log.info(getCurrentTime() + ": " + "Task deleted successfully. Task ID: {}", id);
+        if (taskRepository.existsById(id)) {
+            taskRepository.deleteById(id);
+            log.info(getCurrentTime() + ": " + "Task deleted successfully. Task ID: {}", id);
+        } else {
+            log.warn(getCurrentTime() + ": " + "Task deletion failed. Task not found with ID: {}", id);
+        }
     }
 
     public List<TaskDTO> findByTitle(int page, String title) {

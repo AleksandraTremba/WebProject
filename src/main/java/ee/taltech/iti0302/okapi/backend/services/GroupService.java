@@ -31,7 +31,7 @@ public class GroupService {
         return LocalDateTime.now();
     }
 
-    private GroupDTO getGroupById(long groupId) {
+    protected GroupDTO getGroupById(long groupId) {
         Optional<Group> group = groupRepository.findById(groupId);
         return group.map(GroupMapper.INSTANCE::toDTO).orElse(null);
     }
@@ -52,7 +52,7 @@ public class GroupService {
         return groupDTOs;
     }
 
-    private GroupDTO createGroup(Long customerId, String groupName) {
+    public GroupDTO createGroup(Long customerId, String groupName) {
         log.debug(getCurrentTime() + ": " + "Creating group: {} for customer with ID: {}", groupName, customerId);
         GroupCreateDTO temporaryShell = new GroupCreateDTO(groupName, customerId);
         Group group = GroupMapper.INSTANCE.toEntity(temporaryShell);
@@ -65,13 +65,13 @@ public class GroupService {
         return GroupMapper.INSTANCE.toDTO(group);
     }
 
-    private GroupDTO addCustomerToGroup(Long customerId, Group group) {
+    public GroupDTO addCustomerToGroup(Long customerId, Group group) {
         customerService.updateCustomerGroupData(customerId, group.getId(), GroupRoles.USER);
         log.info(getCurrentTime() + ": " + "Customer added to group successfully. Group ID: {}", group.getId());
         return GroupMapper.INSTANCE.toDTO(group);
     }
 
-    private GroupDTO removeCustomerFromGroup(Long customerId, Group group) {
+    public GroupDTO removeCustomerFromGroup(Long customerId, Group group) {
         if (customerService.customerIsGroupAdmin(customerId)) {
             deleteGroup(group.getId());
         } else {

@@ -16,10 +16,10 @@ public class TaskController {
     @NonNull
     private TaskService taskService;
 
-    @GetMapping
-    public List<TaskDTO> getAllTasks(@RequestParam(defaultValue = "0") int page) {
-        return taskService.getAllTasks(page);
-    }
+//    @GetMapping
+//    public List<TaskDTO> getAllTasks(@RequestParam(defaultValue = "0") int page) {
+//        return taskService.getAllTasks(page);
+//    }
 
     @GetMapping("/title")
     public List<TaskDTO> findByTitle(@RequestParam(defaultValue = "0") int page, @RequestParam() String title) {
