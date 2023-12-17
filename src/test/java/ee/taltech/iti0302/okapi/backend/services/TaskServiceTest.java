@@ -70,7 +70,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testCreateTask_Success() {
+    public void testCreateTaskSuccess() {
         TaskDTO taskDTO = buildTaskDTO("Title", null);
         Task savedTask = new Task();
         savedTask.setId(1L);
@@ -85,7 +85,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testCreateTask_Failure() {
+    public void testCreateTaskFailure() {
         TaskDTO taskDTO = buildTaskDTO("Title", null);
 
         when(taskRepository.save(any(Task.class))).thenReturn(new Task());
@@ -115,7 +115,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testUpdateTaskNotFound() {
+    public void testUpdateTaskFailure() {
         TaskDTO taskDTO = buildTaskDTO("Updated Title", "Updated Description");
 
         when(taskRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -143,7 +143,7 @@ class TaskServiceTest {
     }
 
     @Test
-    public void testDeleteTaskNotFound() {
+    public void testDeleteTaskFailure() {
         TaskDTO taskDTO = buildTaskDTO("Title", null);
 
         when(taskRepository.existsById(anyLong())).thenReturn(false);
