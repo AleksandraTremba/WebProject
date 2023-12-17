@@ -33,11 +33,16 @@ public class TaskService {
         Sort sort = Sort.by("status").descending();
         Pageable pageRequest = PageRequest.of(page, 10, sort);
         Page<Task> task = taskRepository.findAllByCustomerId(customerId, pageRequest);
+        int totalPages = getTotalPages(task);
         List<TaskDTO> taskDTOs = task.getContent().stream()
                 .map(TaskMapper.INSTANCE::toDTO)
                 .toList();
-        log.info(getCurrentTime() + ": " + "Retrieved {} tasks", taskDTOs.size());
+        log.info(getCurrentTime() + ": " + "Retrieved {} tasks in {} pages", taskDTOs.size(), totalPages);
         return taskDTOs;
+    }
+
+    public int getTotalPages(Page<Task> tasks) {
+        return tasks.getTotalPages();
     }
 
     public TaskDTO getTaskById(long id) {
