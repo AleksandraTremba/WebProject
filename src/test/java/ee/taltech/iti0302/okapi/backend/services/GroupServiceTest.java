@@ -6,6 +6,7 @@ import ee.taltech.iti0302.okapi.backend.dto.group.GroupCreateDTO;
 import ee.taltech.iti0302.okapi.backend.dto.group.GroupDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.entities.Group;
+import ee.taltech.iti0302.okapi.backend.enums.GroupCustomerActionType;
 import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
 import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 import ee.taltech.iti0302.okapi.backend.repository.GroupRepository;
@@ -69,7 +70,7 @@ class GroupServiceTest {
     private CustomerDTO buildCustomerDTO() {
         return CustomerDTO.builder()
                 .id(null)
-                .username("username")
+                .username("testUser")
                 .timerId(null)
                 .token("123")
                 .build();
@@ -194,6 +195,35 @@ class GroupServiceTest {
         GroupDTO result = groupService.removeCustomerFromGroup(customerId, group);
 
         assertNotNull(result);
+    }
+
+    @Test
+    void testManipulateCreateGroupCustomerNotFound() {
+        Mockito.when(customerService.getCustomerIdByUsername("testUser")).thenReturn(null);
+
+        GroupDTO result = groupService.manipulateCustomerAndGroup(buildCustomerDTO(), "TestGroup", GroupCustomerActionType.CREATE);
+
+        assertNull(result);
+    }
+
+    @Test
+    void testManipulateAddCustomerToGroupSuccess() {
+        Mockito.when(customerService.getCustomerIdByUsername("testUser")).thenReturn(1L);
+        Mockito.when(groupRepository.findByName("TestGroup")).thenReturn(Optional.of(buildGroup()));
+
+        GroupDTO result = groupService.manipulateCustomerAndGroup(buildCustomerDTO(), "TestGroup", GroupCustomerActionType.ADD);
+
+        assertNull(result.getName());
+    }
+
+    @Test
+    void testManipulateRemoveCustomerToGroupSuccess() {
+        Mockito.when(customerService.getCustomerIdByUsername("testUser")).thenReturn(1L);
+        Mockito.when(groupRepository.findByName("TestGroup")).thenReturn(Optional.of(buildGroup()));
+
+        GroupDTO result = groupService.manipulateCustomerAndGroup(buildCustomerDTO(), "TestGroup", GroupCustomerActionType.DELETE);
+
+        assertNull(result.getName());
     }
 
 
