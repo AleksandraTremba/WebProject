@@ -8,6 +8,7 @@ import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.entities.Group;
 import ee.taltech.iti0302.okapi.backend.enums.GroupCustomerActionType;
 import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
+import ee.taltech.iti0302.okapi.backend.enums.RecordType;
 import ee.taltech.iti0302.okapi.backend.repository.GroupRepository;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import java.util.Optional;
 public class GroupService {
     private final GroupRepository groupRepository;
     private final CustomerService customerService;
+    private final RecordsService recordsService;
 
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
@@ -60,6 +62,7 @@ public class GroupService {
         groupRepository.save(group);
 
         customerService.updateCustomerGroupData(customerId, group.getId(), GroupRoles.ADMIN);
+        recordsService.updateRecords(RecordType.GROUPS);
 
         log.info(getCurrentTime() + ": " + "Group created successfully. Group ID: {}", group.getId());
         return GroupMapper.INSTANCE.toDTO(group);

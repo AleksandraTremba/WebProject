@@ -6,6 +6,7 @@ import ee.taltech.iti0302.okapi.backend.dto.timer.TimerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.timer.TimerResetDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Timer;
 import ee.taltech.iti0302.okapi.backend.dto.timer.DummyTimer;
+import ee.taltech.iti0302.okapi.backend.enums.RecordType;
 import ee.taltech.iti0302.okapi.backend.exceptions.ApplicationRuntimeException;
 import ee.taltech.iti0302.okapi.backend.repository.TimerRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.time.temporal.ChronoUnit;
 @Service
 public class TimerService {
     private final TimerRepository timerRepository;
+    private final RecordsService recordsService;
 
     private DummyTimer createNullTimer() {
         return DummyTimer.builder()
@@ -79,6 +81,8 @@ public class TimerService {
 
         TimerMapper.INSTANCE.updateTimerFromExternalDataset(dto, timer);
         timerRepository.save(timer);
+        recordsService.updateRecords(RecordType.TIMERS);
+
 
         log.info(getCurrentTime() + ": " + "Timer started successfully. Timer ID: {}", id);
         return dto;
