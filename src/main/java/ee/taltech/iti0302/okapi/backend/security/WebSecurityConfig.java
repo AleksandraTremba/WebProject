@@ -46,15 +46,4 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(@NonNull CorsRegistry registry) {
-//                registry.addMapping("/**")
-//                        .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
-//            }
-//        };
-//    }
 }

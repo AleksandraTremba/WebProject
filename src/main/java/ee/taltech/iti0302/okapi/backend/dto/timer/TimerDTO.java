@@ -2,6 +2,7 @@ package ee.taltech.iti0302.okapi.backend.dto.timer;
 
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -10,14 +11,14 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class TimerDTO {
-    @NotBlank
+    @NotNull
     private Long id;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
     // In ms
-    @NotBlank
+    @NotNull
     private Integer runningTime;
     private Long remainingTime;
 }
