@@ -6,6 +6,7 @@ import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerInitDTO;
 import ee.taltech.iti0302.okapi.backend.enums.CustomerServiceUpdate;
 import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
+import ee.taltech.iti0302.okapi.backend.enums.RecordType;
 import ee.taltech.iti0302.okapi.backend.exceptions.ApplicationRuntimeException;
 import ee.taltech.iti0302.okapi.backend.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
     private final TimerService timerService;
+    private final RecordsService recordsService;
 
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
@@ -112,6 +114,7 @@ public class CustomerService {
         customerRepository.save(customer);
         customer.setTimerId(timerService.createTimer(customer.getId()));
         customerRepository.save(customer);
+        recordsService.updateRecords(RecordType.CUSTOMERS);
 
         log.info(getCurrentTime() + ": " + "Customer registered successfully. Username: {}", request.getUsername());
         return CustomerMapper.INSTANCE.toDTO(customer);

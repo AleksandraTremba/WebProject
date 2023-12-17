@@ -3,6 +3,8 @@ package ee.taltech.iti0302.okapi.backend.services;
 import ee.taltech.iti0302.okapi.backend.components.RecordsMapper;
 import ee.taltech.iti0302.okapi.backend.dto.records.RecordsDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Records;
+import ee.taltech.iti0302.okapi.backend.enums.CustomerServiceUpdate;
+import ee.taltech.iti0302.okapi.backend.enums.RecordType;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,5 +60,22 @@ public class RecordsService {
         String numberOfTasks = records.getNumberOfTasks().toString();
         log.info(getCurrentTime() + ": " + "Fetched total amount of tasks: {}", numberOfTasks);
         return numberOfTasks;
+    }
+
+    public void updateRecords(RecordType updateType) {
+        Optional<Records> optionalRecords = recordsRepository.findById(1L);
+        Records records = optionalRecords.orElseGet(Records::new);
+        if (updateType.equals(RecordType.CUSTOMERS)) {
+            records.setNumberOfCustomers(records.getNumberOfCustomers() + 1);
+        }
+        if (updateType.equals(RecordType.TIMERS)) {
+            records.setNumberOfTimers(records.getNumberOfTimers() + 1);
+        }
+        if (updateType.equals(RecordType.TASKS)) {
+            records.setNumberOfTasks(records.getNumberOfTasks() + 1);
+        }
+        if (updateType.equals(RecordType.GROUPS)) {
+            records.setNumberOfGroups(records.getNumberOfGroups() + 1);
+        }
     }
 }

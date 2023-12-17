@@ -4,6 +4,7 @@ import ee.taltech.iti0302.okapi.backend.components.TaskMapper;
 import ee.taltech.iti0302.okapi.backend.dto.task.TaskDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Records;
 import ee.taltech.iti0302.okapi.backend.entities.Task;
+import ee.taltech.iti0302.okapi.backend.enums.RecordType;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import ee.taltech.iti0302.okapi.backend.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
+    private final RecordsService recordsService;
 
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
@@ -50,6 +52,7 @@ public class TaskService {
         Task task = taskRepository.save(TaskMapper.INSTANCE.toEntity(dto));
         if (task.getId() != null) {
             dto.setId(task.getId());
+            recordsService.updateRecords(RecordType.TASKS);
             log.info(getCurrentTime() + ": " + "Task created successfully. Task ID: {}", task.getId());
             return dto;
         }
