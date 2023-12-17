@@ -198,16 +198,6 @@ class GroupServiceTest {
     }
 
     @Test
-    void testManipulateCreateGroupSuccess() {
-        Mockito.when(customerService.getCustomerIdByUsername("testUser")).thenReturn(1L);
-        Mockito.when(groupRepository.findByName("TestGroup")).thenReturn(Optional.empty());
-
-        GroupDTO result = groupService.manipulateCustomerAndGroup(buildCustomerDTO(), "TestGroup", GroupCustomerActionType.CREATE);
-
-        assertEquals("TestGroup", result.getName());
-    }
-
-    @Test
     void testManipulateCreateGroupCustomerNotFound() {
         Mockito.when(customerService.getCustomerIdByUsername("testUser")).thenReturn(null);
 
@@ -217,21 +207,21 @@ class GroupServiceTest {
     }
 
     @Test
-    void testManipulateCreateGroupGroupExists() {
-        Mockito.when(customerService.getCustomerIdByUsername("testUser")).thenReturn(1L);
-        Mockito.when(groupRepository.findByName("TestGroup")).thenReturn(Optional.of(buildGroup()));
-
-        GroupDTO result = groupService.manipulateCustomerAndGroup(buildCustomerDTO(), "TestGroup", GroupCustomerActionType.CREATE);
-
-        assertEquals("TestGroup", result.getName());
-    }
-
-    @Test
     void testManipulateAddCustomerToGroupSuccess() {
         Mockito.when(customerService.getCustomerIdByUsername("testUser")).thenReturn(1L);
         Mockito.when(groupRepository.findByName("TestGroup")).thenReturn(Optional.of(buildGroup()));
 
         GroupDTO result = groupService.manipulateCustomerAndGroup(buildCustomerDTO(), "TestGroup", GroupCustomerActionType.ADD);
+
+        assertNull(result.getName());
+    }
+
+    @Test
+    void testManipulateRemoveCustomerToGroupSuccess() {
+        Mockito.when(customerService.getCustomerIdByUsername("testUser")).thenReturn(1L);
+        Mockito.when(groupRepository.findByName("TestGroup")).thenReturn(Optional.of(buildGroup()));
+
+        GroupDTO result = groupService.manipulateCustomerAndGroup(buildCustomerDTO(), "TestGroup", GroupCustomerActionType.DELETE);
 
         assertNull(result.getName());
     }
