@@ -27,18 +27,16 @@ public class TaskService {
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
     }
-
-//    public List<TaskDTO> getAllTasks(int page) {
-//        Sort sort = Sort.by("status").descending();
-//        Pageable pageRequest = PageRequest.of(page, 10, sort);
-//        Page<Task> task = taskRepository.findAll(pageRequest);
-//        return task.getContent().stream()
-//                .map(TaskMapper.INSTANCE::toDTO)
-//                .toList();
-//        log.info(getCurrentTime() + ": " + "Retrieved {} tasks", taskDTOs.size());
-//        return taskDTOs;
-//    }
-
+    public List<TaskDTO> getAllTasks(int page) {
+        Sort sort = Sort.by("status").descending();
+        Pageable pageRequest = PageRequest.of(page, 10, sort);
+        Page<Task> task = taskRepository.findAll(pageRequest);
+        List<TaskDTO> taskDTOs = task.getContent().stream()
+                .map(TaskMapper.INSTANCE::toDTO)
+                .toList();
+        log.info(getCurrentTime() + ": " + "Retrieved {} tasks", taskDTOs.size());
+        return taskDTOs;
+    }
 
     public TaskDTO getTaskById(long id) {
         Optional<Task> task = taskRepository.findById(id);

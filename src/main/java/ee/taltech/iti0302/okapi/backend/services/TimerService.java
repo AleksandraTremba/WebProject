@@ -36,6 +36,8 @@ public class TimerService {
 
     public TimerDTO getTimerById(Long id) {
         TimerDTO timerDTO = TimerMapper.INSTANCE.toDTO(timerRepository.findById(id).orElse(null));
+        if (timerDTO == null)
+            throw new NullPointerException("It looks like timer with such ID does not exist!");
         log.debug(getCurrentTime() + ": " + "Retrieved timer: {}", timerDTO);
         return timerDTO;
     }
@@ -57,7 +59,7 @@ public class TimerService {
         Timer timer = timerRepository.findById(id).orElse(null);
         if (timer == null) {
             log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", id);
-            return null;
+            throw new NullPointerException();
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -87,7 +89,7 @@ public class TimerService {
         Timer timer = timerRepository.findById(id).orElse(null);
         if (timer == null) {
             log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", id);
-            return null;
+            throw new NullPointerException();
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -109,7 +111,7 @@ public class TimerService {
         log.info(getCurrentTime() + ": " + "Resetting timer with ID: {}", request.getId());
         if (timer == null) {
             log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", request.getId());
-            throw new ApplicationRuntimeException("Timer does not exists!");
+            throw new NullPointerException();
         }
 
         if (!timer.getCustomerId().equals(request.getCustomerId()))
