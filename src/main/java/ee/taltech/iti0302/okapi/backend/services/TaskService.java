@@ -27,10 +27,10 @@ public class TaskService {
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
     }
-    public List<TaskDTO> getAllTasks(int page) {
+    public List<TaskDTO> getAllByCustomerId(int page, long customerId) {
         Sort sort = Sort.by("status").descending();
         Pageable pageRequest = PageRequest.of(page, 10, sort);
-        Page<Task> task = taskRepository.findAll(pageRequest);
+        Page<Task> task = taskRepository.findAllByCustomerId(customerId, pageRequest);
         List<TaskDTO> taskDTOs = task.getContent().stream()
                 .map(TaskMapper.INSTANCE::toDTO)
                 .toList();

@@ -13,21 +13,16 @@ import java.util.List;
 @RequestMapping("api/tasks")
 @CrossOrigin(origins = "http://127.0.0.1:8081")
 public class TaskController {
-    @NonNull
-    private TaskService taskService;
-
-//    @GetMapping
-//    public List<TaskDTO> getAllTasks(@RequestParam(defaultValue = "0") int page) {
-//        return taskService.getAllTasks(page);
-//    }
+    private final TaskService taskService;
 
     @GetMapping("/title")
     public List<TaskDTO> findByTitle(@RequestParam(defaultValue = "0") int page, @RequestParam() String title) {
         return taskService.findByTitle(page, title);
     }
-    @GetMapping("/{id}")
-    public TaskDTO getTaskById(@PathVariable long id) {
-        return taskService.getTaskById(id);
+
+    @GetMapping("/")
+    public List<TaskDTO> getTaskById(@RequestParam(defaultValue = "0") int page, @RequestParam long customerId) {
+        return taskService.getAllByCustomerId(page, customerId);
     }
 
     @PutMapping("/create")
