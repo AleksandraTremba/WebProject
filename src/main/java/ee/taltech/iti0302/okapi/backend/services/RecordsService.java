@@ -19,6 +19,7 @@ import java.util.Optional;
 @Service
 public class RecordsService {
     private final RecordsRepository recordsRepository;
+    private Long recordsDataId = 1L;
 
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
@@ -64,10 +65,11 @@ public class RecordsService {
     }
 
     public void updateRecords(RecordType updateType) {
-        Records records = recordsRepository.findById(1L).orElse(null);
+        Records records = recordsRepository.findById(recordsDataId).orElse(null);
         if (records == null) {
-            log.warn(getCurrentTime() + ": " + "Records entry with id {} could not be found", 1L);
-            throw new ApplicationRuntimeException("Records could not be found!");
+            log.warn(getCurrentTime() + ": " + "Records entry with id {} could not be found", recordsDataId);
+            records = new Records();
+            recordsDataId = records.getId();
         }
 
         if (updateType.equals(RecordType.CUSTOMERS)) {
