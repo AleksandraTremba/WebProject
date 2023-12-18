@@ -3,12 +3,10 @@ package ee.taltech.iti0302.okapi.backend.controllers;
 
 import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.group.GroupDTO;
-import ee.taltech.iti0302.okapi.backend.dto.group.GroupInfoTransferDTO;
 import ee.taltech.iti0302.okapi.backend.enums.GroupCustomerActionType;
 import ee.taltech.iti0302.okapi.backend.services.GroupService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

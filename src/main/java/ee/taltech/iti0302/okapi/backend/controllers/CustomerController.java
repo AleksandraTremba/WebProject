@@ -2,7 +2,6 @@ package ee.taltech.iti0302.okapi.backend.controllers;
 
 import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerChangeDataDTO;
 import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerInitDTO;
-import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;

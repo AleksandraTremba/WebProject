@@ -1,12 +1,10 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
-import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.timer.TimerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.timer.TimerResetDTO;
 import ee.taltech.iti0302.okapi.backend.services.TimerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

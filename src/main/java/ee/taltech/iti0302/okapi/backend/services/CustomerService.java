@@ -34,7 +34,7 @@ public class CustomerService {
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
     }
-    private static final String errorInfo = "Provided username or password are invalid!";
+    private static final String ERROR_INFO = "Provided username or password are invalid!";
 
     public boolean customerExists(String username) {
         return customerRepository.existsByUsername(username);
@@ -96,11 +96,11 @@ public class CustomerService {
         Customer customer = customerRepository.findByUsername(request.getUsername()).orElse(null);
         if (customer == null) {
             log.warn(getCurrentTime() + ": " + "Login failed. Customer not found with username: {}", request.getUsername());
-            throw new ApplicationRuntimeException(errorInfo);
+            throw new ApplicationRuntimeException(ERROR_INFO);
         }
         if (!passwordEncoder.matches(request.getPassword(), customer.getPassword())) {
             log.warn(getCurrentTime() + ": " + "Login failed. Incorrect password for customer with username: {}", request.getUsername());
-            throw new ApplicationRuntimeException(errorInfo);
+            throw new ApplicationRuntimeException(ERROR_INFO);
         }
 
         String token = tokenProvider.generateToken(request.getUsername());
@@ -132,7 +132,7 @@ public class CustomerService {
         Customer customer = customerRepository.findByUsername(request.getUsername()).orElse(null);
         if (customer == null || !passwordEncoder.matches(request.getPassword(), customer.getPassword())) {
             log.warn(getCurrentTime() + ": " + "Update failed. Customer not found with username: {}", request.getUsername());
-            throw new ApplicationRuntimeException(errorInfo);
+            throw new ApplicationRuntimeException(ERROR_INFO);
         }
 
         if (updateType.equals(CustomerServiceUpdate.CHANGE_USERNAME)) {
@@ -162,7 +162,7 @@ public class CustomerService {
         Customer customer = customerRepository.findByUsername(request.getUsername()).orElse(null);
         if (customer == null || !passwordEncoder.matches(request.getPassword(), customer.getPassword())) {
             log.warn(getCurrentTime() + ": " + "Deletion failed. Customer not found with username: {}", request.getUsername());
-            throw new ApplicationRuntimeException("Provided username or password are invalid!");
+            throw new ApplicationRuntimeException(ERROR_INFO);
         }
 
         timerService.deleteTimer(customer.getTimerId());

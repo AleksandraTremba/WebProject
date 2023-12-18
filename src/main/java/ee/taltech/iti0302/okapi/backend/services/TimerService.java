@@ -1,7 +1,6 @@
 package ee.taltech.iti0302.okapi.backend.services;
 
 import ee.taltech.iti0302.okapi.backend.components.TimerMapper;
-import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.timer.TimerDTO;
 import ee.taltech.iti0302.okapi.backend.dto.timer.TimerResetDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Timer;
@@ -60,7 +59,7 @@ public class TimerService {
         log.info(getCurrentTime() + ": " + "Starting timer with ID: {}", id);
         Timer timer = timerRepository.findById(id).orElse(null);
         if (timer == null) {
-            log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", id);
+            log.warn(getCurrentTime() + ": " + "Timer not found with ID at start timer: {}", id);
             throw new NullPointerException();
         }
 
@@ -92,7 +91,7 @@ public class TimerService {
         log.info(getCurrentTime() + ": " + "Stopping timer with ID: {}", id);
         Timer timer = timerRepository.findById(id).orElse(null);
         if (timer == null) {
-            log.warn(getCurrentTime() + ": " + "Timer not found with ID: {}", id);
+            log.warn(getCurrentTime() + ": " + "Timer not found with ID at stop timer: {}", id);
             throw new NullPointerException();
         }
 

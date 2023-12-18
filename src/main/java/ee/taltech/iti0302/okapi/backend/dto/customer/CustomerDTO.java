@@ -3,7 +3,6 @@ package ee.taltech.iti0302.okapi.backend.dto.customer;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @Builder

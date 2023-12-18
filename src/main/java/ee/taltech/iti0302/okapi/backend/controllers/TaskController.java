@@ -2,7 +2,6 @@ package ee.taltech.iti0302.okapi.backend.controllers;
 
 import ee.taltech.iti0302.okapi.backend.dto.task.TaskDTO;
 import ee.taltech.iti0302.okapi.backend.services.TaskService;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
