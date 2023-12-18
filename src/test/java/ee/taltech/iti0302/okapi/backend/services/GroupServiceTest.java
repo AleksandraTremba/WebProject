@@ -8,6 +8,7 @@ import ee.taltech.iti0302.okapi.backend.entities.Customer;
 import ee.taltech.iti0302.okapi.backend.entities.Group;
 import ee.taltech.iti0302.okapi.backend.enums.GroupCustomerActionType;
 import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
+import ee.taltech.iti0302.okapi.backend.exceptions.ApplicationRuntimeException;
 import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
 import ee.taltech.iti0302.okapi.backend.repository.GroupRepository;
 import org.junit.jupiter.api.Test;
@@ -118,6 +119,28 @@ class GroupServiceTest {
         GroupDTO resultDTO = groupService.searchGroupById(groupDTO.getId());
 
         assertNull(resultDTO);
+    }
+
+
+    @Test
+    void testGetGroupMembers() throws ApplicationRuntimeException {
+        long groupId = 1L;
+        Mockito.when(groupRepository.existsById(groupId)).thenReturn(true);
+
+        List<Customer> mockCustomers = List.of(buildCustomer("Username1"), buildCustomer("Username2"));
+        Mockito.when(customerService.findByGroupId(eq(groupId))).thenReturn(mockCustomers);
+
+        List<CustomerDTO> result = groupService.getGroupMembers(groupId);
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void testGetGroupMembersGroupNotFound() {
+        long groupId = 2L;
+        Mockito.when(groupRepository.existsById(groupId)).thenReturn(false);
+
+        assertThrows(ApplicationRuntimeException.class, () -> groupService.getGroupMembers(groupId));
     }
 
     @Test

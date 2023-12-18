@@ -72,6 +72,17 @@ class TaskServiceTest {
     }
 
     @Test
+    void testGetAllByCustomerId() {
+        long customerId = 1L;
+        Page<Task> mockedPage = new PageImpl<>(List.of(new Task(), new Task()));
+        Mockito.when(taskRepository.findAllByCustomerId(eq(customerId), any(Pageable.class))).thenReturn(mockedPage);
+
+        List<TaskDTO> result = taskService.getAllByCustomerId(0, customerId);
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
     public void testCreateTaskSuccess() {
         TaskDTO taskDTO = buildTaskDTO("Title", null);
         Task savedTask = new Task();
