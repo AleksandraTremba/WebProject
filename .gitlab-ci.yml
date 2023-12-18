@@ -1,0 +1,22 @@
+stages:
+  - build
+  - deploy
+
+build-job:
+  stage: build
+  only:
+    - dev
+  script:
+    - sh $CI_PROJECT_DIR/mvnw clean install spring-boot:repackage
+    - echo ${CI_PROJECT_DIR}
+    - docker build -t project-okapi-backend:latest .
+
+deploy-job:
+  stage: deploy
+  only:
+    - dev
+    - main
+  script:
+    - cd /opt/project-okapi/
+    - docker compose down
+    - docker compose up -d

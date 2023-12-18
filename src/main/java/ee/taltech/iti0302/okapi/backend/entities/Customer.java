@@ -1,43 +1,38 @@
 package ee.taltech.iti0302.okapi.backend.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import ee.taltech.iti0302.okapi.backend.enums.GroupRoles;
+import jakarta.persistence.*;
+import lombok.*;
 
+@Getter
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "customers")
 public class Customer {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NonNull
+    @Setter
     @Column(nullable = false, unique = true)
     private String username;
+
+    @NonNull
+    @Setter
     @Column(nullable = false)
     private String password;
 
-    public Customer() {}
+    @Setter
+    @JoinColumn(name = "timer_id")
+    private Long timerId;
 
-    public Customer(String username) {
-        this.username = username;
-    }
+    @Setter
+    @JoinColumn(name = "group_id")
+    private Long groupId;
 
-    public Customer(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private GroupRoles groupRole;
 }

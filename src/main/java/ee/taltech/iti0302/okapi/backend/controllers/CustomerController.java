@@ -1,35 +1,49 @@
 package ee.taltech.iti0302.okapi.backend.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerChangeDataDTO;
+import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerInitDTO;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
-import ee.taltech.iti0302.okapi.backend.dto.CustomerDTO;
-import ee.taltech.iti0302.okapi.backend.entities.Customer;
-import ee.taltech.iti0302.okapi.backend.repository.CustomerRepository;
+import ee.taltech.iti0302.okapi.backend.dto.customer.CustomerDTO;
+import ee.taltech.iti0302.okapi.backend.services.CustomerService;
 
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("api/")
+@Validated
 public class CustomerController {
-    
-    @Autowired
-    private CustomerRepository userRepository;
+    private final CustomerService customerService;
 
-    public CustomerController(CustomerRepository userRepository) {
-        this.userRepository = userRepository;
+    @GetMapping("public/customers/{username}")
+    public CustomerDTO getData(@PathVariable String username) {
+        return customerService.getCustomerData(username);
     }
 
-    @PostMapping("login")
-    public boolean login(@RequestParam CustomerDTO customer) {
-        boolean exists = userRepository.existsByUsername(customer.getUsername());
-        return exists;
+    @PostMapping("public/customers/login")
+    public CustomerDTO login(@RequestBody CustomerInitDTO request) {
+        return customerService.login(request);
     }
 
-    @PostMapping("register")
-    public Customer registerCustomer(@RequestBody CustomerDTO customer) {
-        return userRepository.save(new Customer(customer.getUsername(), customer.getPassword()));
+    @PutMapping("public/customers/register")
+    public CustomerDTO registerCustomer(@RequestBody @Valid CustomerInitDTO request) {
+        return customerService.register(request);
+    }
+
+    @PostMapping("customers/update/username")
+    public CustomerDTO updateCustomerUsername(@RequestBody @Valid CustomerChangeDataDTO request) {
+        return customerService.updateUsername(request);
+    }
+
+    @PostMapping("customers/update/password")
+    public CustomerDTO updateCustomerPassword(@RequestBody CustomerChangeDataDTO request) {
+        return customerService.updatePassword(request);
+    }
+
+    @DeleteMapping("customers/delete")
+    public boolean deleteCustomer(@RequestBody CustomerInitDTO request) {
+        return customerService.delete(request);
     }
 }
