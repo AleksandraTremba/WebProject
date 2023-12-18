@@ -205,5 +205,24 @@ public class TimerServiceTest {
         verify(timerRepository).deleteById(eq(timerId));
     }
 
+    @Test
+    void testGetTimerByIdExists() {
+        Timer timer = buildTimer(LocalDateTime.now(), LocalDateTime.now().plusMinutes(5), 300, 0L);
+
+        Mockito.when(timerRepository.findById(eq(1L))).thenReturn(Optional.of(timer));
+
+        TimerDTO result = timerService.getTimerById(1L);
+
+        assertNotNull(result);
+        assertNull(result.getId());
+    }
+
+    @Test
+    void testGetTimerByIdNotExists() {
+        Mockito.when(timerRepository.findById(eq(2L))).thenReturn(Optional.empty());
+
+        assertThrows(NullPointerException.class, () -> timerService.getTimerById(2L));
+    }
+
 }
 

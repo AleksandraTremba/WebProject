@@ -4,17 +4,21 @@ import ee.taltech.iti0302.okapi.backend.components.RecordsMapper;
 import ee.taltech.iti0302.okapi.backend.components.RecordsMapperImpl;
 import ee.taltech.iti0302.okapi.backend.dto.records.RecordsDTO;
 import ee.taltech.iti0302.okapi.backend.entities.Records;
+import ee.taltech.iti0302.okapi.backend.enums.RecordType;
 import ee.taltech.iti0302.okapi.backend.repository.RecordsRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -123,6 +127,68 @@ public class RecordsServiceTest {
         //Then
         then(recordsRepository).should().findById(1L);
         assertEquals("4", response);
+    }
+
+    @Test
+    void testUpdateRecordsCustomer() {
+        long recordsDataId = 1L;
+        Records existingRecords = new Records();
+        existingRecords.setNumberOfCustomers(5);
+        Mockito.when(recordsRepository.findById(eq(recordsDataId))).thenReturn(Optional.of(existingRecords));
+
+        recordsService.updateRecords(RecordType.CUSTOMERS);
+
+        Mockito.verify(recordsRepository).save(existingRecords);
+        assertEquals(6, existingRecords.getNumberOfCustomers());
+    }
+
+    @Test
+    void testUpdateRecordsNewRecord() {
+        long recordsDataId = 1L;
+        Mockito.when(recordsRepository.findById(eq(recordsDataId))).thenReturn(Optional.empty());
+
+        recordsService.updateRecords(RecordType.CUSTOMERS);
+
+        Mockito.verify(recordsRepository).save(any(Records.class));
+    }
+
+    @Test
+    void testUpdateRecordsTimers() {
+        long recordsDataId = 1L;
+        Records existingRecords = new Records();
+        existingRecords.setNumberOfTimers(5);
+        Mockito.when(recordsRepository.findById(eq(recordsDataId))).thenReturn(Optional.of(existingRecords));
+
+        recordsService.updateRecords(RecordType.TIMERS);
+
+        Mockito.verify(recordsRepository).save(existingRecords);
+        assertEquals(6, existingRecords.getNumberOfTimers());
+    }
+
+    @Test
+    void testUpdateRecordsTasks() {
+        long recordsDataId = 1L;
+        Records existingRecords = new Records();
+        existingRecords.setNumberOfTasks(8);
+        Mockito.when(recordsRepository.findById(eq(recordsDataId))).thenReturn(Optional.of(existingRecords));
+
+        recordsService.updateRecords(RecordType.TASKS);
+
+        Mockito.verify(recordsRepository).save(existingRecords);
+        assertEquals(9, existingRecords.getNumberOfTasks());
+    }
+
+    @Test
+    void testUpdateRecordsGroups() {
+        long recordsDataId = 1L;
+        Records existingRecords = new Records();
+        existingRecords.setNumberOfGroups(3);
+        Mockito.when(recordsRepository.findById(eq(recordsDataId))).thenReturn(Optional.of(existingRecords));
+
+        recordsService.updateRecords(RecordType.GROUPS);
+
+        Mockito.verify(recordsRepository).save(existingRecords);
+        assertEquals(4, existingRecords.getNumberOfGroups());
     }
 
 }

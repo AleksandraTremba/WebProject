@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,8 +25,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
@@ -417,5 +420,92 @@ class CustomerServiceTest {
         assertDoesNotThrow(() -> customerService.removeCustomerGroupData(1L));
         assertNull(customer.getGroupId());
         assertNull(customer.getGroupRole());
+    }
+
+    @Test
+    void testRemoveCustomerGroupData() {
+        Customer customer = buildCustomer("TestUser", "TestPass");
+        customer.setGroupId(123L);
+        customer.setGroupRole(GroupRoles.ADMIN);
+
+        customerService.removeCustomerGroupData(customer);
+
+        verify(customerRepository).save(customer);
+        assertNull(customer.getGroupId());
+        assertNull(customer.getGroupRole());
+    }
+
+    @Test
+    void testCustomerIsGroupAdmin() {
+        Customer adminCustomer = buildCustomer("AdminUsername", "AdminPass");
+        adminCustomer.setGroupRole(GroupRoles.ADMIN);
+
+        Mockito.when(customerRepository.findById(eq(1L))).thenReturn(Optional.of(adminCustomer));
+
+        boolean result = customerService.customerIsGroupAdmin(1L);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void testCustomerIsNotGroupAdmin() {
+        Customer regularCustomer = new Customer();
+        regularCustomer.setGroupRole(GroupRoles.USER);
+
+        Mockito.when(customerRepository.findById(eq(2L))).thenReturn(Optional.of(regularCustomer));
+
+        boolean result = customerService.customerIsGroupAdmin(2L);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void testCustomerNotFound() {
+        Mockito.when(customerRepository.findById(eq(3L))).thenReturn(Optional.empty());
+
+        assertThrows(NullPointerException.class, () -> customerService.customerIsGroupAdmin(3L));
+    }
+
+    @Test
+    void testGetCustomerDataExists() {
+        Customer customer = buildCustomer("TestUser", "TestPass");
+
+        Mockito.when(customerRepository.findByUsername("TestUser")).thenReturn(Optional.of(customer));
+
+        CustomerDTO result = customerService.getCustomerData("TestUser");
+
+        assertNotNull(result);
+        assertEquals("TestUser", result.getUsername());
+    }
+
+    @Test
+    void testGetCustomerDataNotExists() {
+        Mockito.when(customerRepository.findByUsername("nonExistingUsername")).thenReturn(Optional.empty());
+
+        CustomerDTO result = customerService.getCustomerData("nonExistingUsername");
+
+        assertNull(result);
+    }
+
+    @Test
+    void testClearSensitiveInformation() {
+        CustomerDTO customerDTO = buildCustomerDTO(1L, "Username", 2L, "secretToken");
+
+        CustomerDTO result = customerService.clearSensitiveInformation(customerDTO);
+
+        assertNull(result.getId());
+        assertNull(result.getToken());
+        assertNull(result.getTimerId());
+    }
+
+    @Test
+    void testClearSensitiveInformationNullValues() {
+        CustomerDTO customerDTO = buildCustomerDTO(null, "Username", null, "123");
+
+        CustomerDTO result = customerService.clearSensitiveInformation(customerDTO);
+
+        assertNull(result.getId());
+        assertNull(result.getToken());
+        assertNull(result.getTimerId());
     }
 }
