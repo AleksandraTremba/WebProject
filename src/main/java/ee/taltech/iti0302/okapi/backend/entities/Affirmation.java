@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "affirmations")
-public class Affirmations {
+public class Affirmation {
     @Id
     private Long id = 1L;
 
