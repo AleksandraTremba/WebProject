@@ -39,7 +39,6 @@ public class AffirmationService {
         if (affirmation == null) {
             affirmation = new Affirmation();
             affirmationDataId = affirmation.getId();
-            log.info(getCurrentTime() + ": new affrimation has been made");
         }
 
         affirmation.setAffirmation(response.getAffirmation());
