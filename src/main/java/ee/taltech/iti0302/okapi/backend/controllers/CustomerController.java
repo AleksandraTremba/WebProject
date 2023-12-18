@@ -14,6 +14,7 @@ import ee.taltech.iti0302.okapi.backend.services.CustomerService;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/")
+@CrossOrigin(origins = "http://127.0.0.1:8081")
 @Validated
 public class CustomerController {
     private final CustomerService customerService;
