@@ -18,10 +18,11 @@ track their time spent studying and completed tasks.
 * Liquibase 4.24.0 
 * Lombok 1.18.30
 
-## Installation
+## Setup
 ### Requirements
 In order to get backend up and running, the system must have the following dependencies installed:
 * OpenJDK 17
+* Docker
 
 ### Building
 Note: Internet connectivity is required to download dependencies. Without it
@@ -36,7 +37,13 @@ from the `target` folder and run:
 
 `java -jar  *.jar`
 
-## Features
+### Database Configuration
+
+When in root folder, using Docker Compose run the following command:
+
+`docker compose up -d`
+
+Now, your backend should be up and running with PostgreSQL as the database.
 
 ## Features
 
@@ -78,17 +85,3 @@ from the `target` folder and run:
 * Updates amount of users registered
 * Updates amount of timers started
 * Updates amount of groups and tasks created
-
-
-# Roadmap
-Features we will finish developing until the end of project:
-* User's *time spent studying* will be saved as a **total time**.
-* Users will be able to form study/working groups
-* Each study group will have a unified task management system
-* Groups will have a scoreboard so students can compete with each other
-* PassKey support to drop passwords altogether
-* Quick Notes
-* Offline support
-* Mobile-first interface
-* GitLab support (tasks = issues && automatic `/spent` when timer is stopped)
-* Dynamic background (wallpaper changes according to student's preferences)
