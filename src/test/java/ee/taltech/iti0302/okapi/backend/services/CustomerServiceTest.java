@@ -508,5 +508,4 @@ class CustomerServiceTest {
         assertNull(result.getToken());
         assertNull(result.getTimerId());
     }
-
 }

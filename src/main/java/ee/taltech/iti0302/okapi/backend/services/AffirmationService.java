@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class AffirmationService {
     private final AffirmationRepository affirmationRepository;
     private Long affirmationDataId = 1L;
-    private final RestTemplate restTemplate = restTemplate();
+    private final RestTemplate restTemplate = new RestTemplate();
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
     }
@@ -29,7 +29,7 @@ public class AffirmationService {
 
     @Scheduled(fixedDelay = 30000)
     public void requestAffirmation() {
-        AffirmationDTO response = restTemplate.getForObject("https://www.affirmations.dev", ee.taltech.iti0302.okapi.backend.dto.affirmation.AffirmationDTO.class);
+        AffirmationDTO response = restTemplate.getForObject("https://www.affirmations.dev", AffirmationDTO.class);
         if (response == null) {
             log.info(getCurrentTime() + ": affirmation response was null");
             return;
